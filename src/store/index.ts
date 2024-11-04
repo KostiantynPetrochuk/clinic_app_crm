@@ -1,0 +1,19 @@
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "./features/auth/authSlice";
+import loadingReducer from "./features/loading/loadingSlice";
+import messageReducer from "./features/message/messageSlice";
+import persistReducer from "./features/persist/persistSlice";
+
+export const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    persist: persistReducer,
+    loading: loadingReducer,
+    message: messageReducer,
+  },
+});
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch;
