@@ -9,6 +9,7 @@ export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   CRM_USERS: "/crm-users",
+  FILIALS: "/filials",
   UNAUTHORIZED: "/unauthorized",
 };  
 

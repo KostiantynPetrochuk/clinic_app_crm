@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import BusinessIcon from "@mui/icons-material/Business";
 import HomeIcon from "@mui/icons-material/Home";
 import AppBar from "@mui/material/AppBar";
 import GroupIcon from "@mui/icons-material/Group";
@@ -23,9 +24,10 @@ const Footer = () => {
   if (currentPage === "crm-users" && value !== 1) {
     setValue(1);
   }
+  const handleNavigation = (_: any, newValue: number) => setValue(newValue);
   const navigateHome = () => navigate(APP_ROUTES.HOME);
   const navigateCrmUsers = () => navigate(APP_ROUTES.CRM_USERS);
-  const handleNavigation = (_: any, newValue: number) => setValue(newValue);
+  const navigateFilials = () => navigate(APP_ROUTES.FILIALS);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -45,6 +47,11 @@ const Footer = () => {
               label="Користувачі CRM"
               icon={<GroupIcon />}
               onClick={navigateCrmUsers}
+            />
+            <BottomNavigationAction
+              label="Філії"
+              icon={<BusinessIcon />}
+              onClick={navigateFilials}
             />
           </BottomNavigation>
         </AppBar>

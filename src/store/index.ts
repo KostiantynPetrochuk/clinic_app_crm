@@ -4,11 +4,13 @@ import loadingReducer from "./features/loading/loadingSlice";
 import messageReducer from "./features/message/messageSlice";
 import persistReducer from "./features/persist/persistSlice";
 import crmUsersReducer from "./features/crmUsers/crmUsersSlice";
+import filialsReducer from "./features/filials/filialsSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     crmUsers: crmUsersReducer,
+    filials: filialsReducer,
     persist: persistReducer,
     loading: loadingReducer,
     message: messageReducer,

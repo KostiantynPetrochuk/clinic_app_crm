@@ -5,11 +5,16 @@ import {
   selectCrmUsers,
   setCrmUsers,
 } from "../store/features/crmUsers/crmUsersSlice";
+import {
+  selectFilials,
+  setFilials,
+} from "../store/features/filials/filialsSlice";
 
 const useRefreshToken = () => {
   const dispatch = useAppDispatch();
   const { setAuth } = useAuth();
   const crmUsers = useAppSelector(selectCrmUsers);
+  const filials = useAppSelector(selectFilials);
   const refresh = async () => {
     try {
       const refreshToken = window.localStorage.getItem("refreshToken");
@@ -46,6 +51,22 @@ const useRefreshToken = () => {
         });
         const crmUsersResult = await response.json();
         dispatch(setCrmUsers(crmUsersResult));
+      }
+      if (!filials.length) {
+        const response = await fetch(`${API_URL}filials`, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${result.tokens.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+        });
+        const filialsResult = await response.json();
+        dispatch(setFilials(filialsResult));
       }
       //
       return result.token;

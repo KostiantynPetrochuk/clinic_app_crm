@@ -11,6 +11,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GroupIcon from "@mui/icons-material/Group";
+import BusinessIcon from '@mui/icons-material/Business';
 import useLogout from "../../hooks/useLogout";
 import { APP_ROUTES } from "../../constants";
 
@@ -62,6 +63,16 @@ const Home = () => {
                         <GroupIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Користувачі CRM"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.FILIALS}>
+                  <ListItem key={"filials"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <BusinessIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Філії"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

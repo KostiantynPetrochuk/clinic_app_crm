@@ -15,6 +15,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
+import BusinessIcon from '@mui/icons-material/Business';
 import { Paper } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -102,6 +103,16 @@ const Header = () => {
                         <GroupIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Користувачі CRM"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.FILIALS}>
+                  <ListItem key={"filials"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <BusinessIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Філії"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

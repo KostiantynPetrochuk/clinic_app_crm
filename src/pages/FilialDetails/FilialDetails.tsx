@@ -7,14 +7,9 @@ import { useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
-  Avatar,
   Grid2 as Grid,
   TextField,
   Button,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
 } from "@mui/material";
 
 import useFetchPrivate from "../../hooks/useFetchPrivate";
@@ -22,23 +17,20 @@ import useMessage from "../../hooks/useMessage";
 import useLoading from "../../hooks/useLoading";
 import { useEffect } from "react";
 
-const CrmUserDetails = () => {
+const FilialDetails = () => {
   const fetchPrivate = useFetchPrivate();
   const showMessage = useMessage();
   const { startLoading, stopLoading } = useLoading();
-  const [currentUser, setCurrentUser] = useState<CrmUser>();
+  const [currentFilial, setCurrentFilial] = useState<Filial>();
   const [editMode, setEditMode] = useState(false);
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
-    id: currentUser?.id || "",
-    firstName: currentUser?.firstName || "",
-    lastName: currentUser?.lastName || "",
-    middleName: currentUser?.middleName || "",
-    phoneCountryCode: currentUser?.phoneCountryCode || "",
-    phoneNumber: currentUser?.phoneNumber || "",
-    roles: currentUser?.roles || [],
-    access: currentUser?.access || false,
+    id: currentFilial?.id || "",
+    region: currentFilial?.region || "",
+    city: currentFilial?.city || "",
+    address: currentFilial?.address || "",
+    phone: currentFilial?.phone || "",
   });
 
   const handleChange = (event: any) => {
@@ -51,9 +43,9 @@ const CrmUserDetails = () => {
   };
 
   const handleSubmit = () => {
-    const updateUser = async () => {
+    const updateFilial = async () => {
       startLoading();
-      const { data, error } = await fetchPrivate("crm-user", {
+      const { data, error } = await fetchPrivate("filials", {
         method: "PATCH",
         body: JSON.stringify(formData),
       });
@@ -61,46 +53,43 @@ const CrmUserDetails = () => {
         stopLoading();
         showMessage({
           title: "Помилка!",
-          text: "Не вдалось зберегти користувача.",
+          text: "Не вдалось редагувати філію.",
           severity: "error",
         });
         return;
       }
-      setCurrentUser(data?.user);
+      setCurrentFilial(data);
       setEditMode(false);
       stopLoading();
     };
-    updateUser();
+    updateFilial();
   };
 
   useEffect(() => {
     const fetchData = async () => {
       startLoading();
       try {
-        const { data, error } = await fetchPrivate("crm-user/" + id);
+        const { data, error } = await fetchPrivate("filials/" + id);
         if (error) {
           showMessage({
             title: "Помилка!",
-            text: "Не вдалось отримати користувачів.",
+            text: "Не вдалось отримати філію.",
             severity: "error",
           });
           return;
         }
-        setCurrentUser(data);
+        setCurrentFilial(data);
         setFormData({
           id: data.id,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          middleName: data.middleName,
-          phoneCountryCode: data.phoneCountryCode,
-          phoneNumber: data.phoneNumber,
-          roles: data.roles,
-          access: data.access,
+          region: data.region,
+          city: data.city,
+          address: data.address,
+          phone: data.phone,
         });
       } catch (error) {
         showMessage({
           title: "Помилка!",
-          text: "Не вдалось отримати користувачів.",
+          text: "Не вдалось отримати філію.",
           severity: "error",
         });
       } finally {
@@ -132,8 +121,8 @@ const CrmUserDetails = () => {
     </Container>
   );
 
-  if (currentUser) {
-    title = `Id: ${currentUser.id}`;
+  if (currentFilial) {
+    title = `Id: ${currentFilial.id}`;
     content = (
       <Container component="main">
         <Box>
@@ -173,49 +162,35 @@ const CrmUserDetails = () => {
                 >
                   <CardContent>
                     <Grid container spacing={2} alignItems="center">
-                      <Grid>
-                        <Avatar sx={{ width: 60, height: 60 }}></Avatar>
-                      </Grid>
                       <Grid sx={{ textAlign: "left" }}>
-                        <Typography variant="h5">
-                          Редагування користувача
-                        </Typography>
+                        <Typography variant="h5">Редагування філії</Typography>
                       </Grid>
                     </Grid>
                     <Grid container spacing={2} sx={{ mt: 2 }}>
                       <Grid width={1}>
                         <TextField
                           fullWidth
-                          label="Прізвище"
-                          name="lastName"
-                          value={formData.lastName}
+                          label="Область"
+                          name="region"
+                          value={formData.region}
                           onChange={handleChange}
                         />
                       </Grid>
                       <Grid width={1}>
                         <TextField
                           fullWidth
-                          label="Ім'я"
-                          name="firstName"
-                          value={formData.firstName}
+                          label="Місто"
+                          name="city"
+                          value={formData.city}
                           onChange={handleChange}
                         />
                       </Grid>
                       <Grid width={1}>
                         <TextField
                           fullWidth
-                          label="По батькові"
-                          name="middleName"
-                          value={formData.middleName}
-                          onChange={handleChange}
-                        />
-                      </Grid>
-                      <Grid width={1}>
-                        <TextField
-                          fullWidth
-                          label="Код країни телефону"
-                          name="phoneCountryCode"
-                          value={formData.phoneCountryCode}
+                          label="Адреса"
+                          name="address"
+                          value={formData.address}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -223,50 +198,10 @@ const CrmUserDetails = () => {
                         <TextField
                           fullWidth
                           label="Номер телефону"
-                          name="phoneNumber"
-                          value={formData.phoneNumber}
+                          name="phone"
+                          value={formData.phone}
                           onChange={handleChange}
                         />
-                      </Grid>
-                      <Grid width={1}>
-                        <TextField
-                          fullWidth
-                          label="Посада"
-                          name="roles"
-                          value={formData.roles.join(",")}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            const newValue = value.split(",");
-                            setFormData({
-                              ...formData,
-                              roles: newValue,
-                            });
-                          }}
-                        />
-                      </Grid>
-                      <Grid width={1}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Доступ
-                          </InputLabel>
-                          <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={formData.access}
-                            label="Доступ"
-                            onChange={(event) => {
-                              const value = event.target.value;
-                              const newValue = value === "true" ? true : false;
-                              setFormData({
-                                ...formData,
-                                access: newValue,
-                              });
-                            }}
-                          >
-                            <MenuItem value={"false"}>Заборонено</MenuItem>
-                            <MenuItem value={"true"}>Дозволено</MenuItem>
-                          </Select>
-                        </FormControl>
                       </Grid>
                     </Grid>
                     <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -301,22 +236,6 @@ const CrmUserDetails = () => {
                   }}
                 >
                   <CardContent>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid>
-                        <Avatar sx={{ width: 60, height: 60 }}>
-                          {currentUser.lastName[0]}
-                          {currentUser.firstName[0]}
-                        </Avatar>
-                      </Grid>
-                      <Grid sx={{ textAlign: "left" }}>
-                        <Typography variant="h5">
-                          {currentUser.lastName} {currentUser.firstName}
-                        </Typography>
-                        <Typography variant="subtitle1" color="text.secondary">
-                          {currentUser.middleName}
-                        </Typography>
-                      </Grid>
-                    </Grid>
                     <Grid
                       container
                       direction="column"
@@ -325,21 +244,22 @@ const CrmUserDetails = () => {
                     >
                       <Grid>
                         <Typography variant="body1">
-                          <strong>Телефон:</strong>{" "}
-                          {currentUser.phoneCountryCode}
-                          {currentUser.phoneNumber}
+                          <strong>Область:</strong> {currentFilial.region}
                         </Typography>
                       </Grid>
                       <Grid>
                         <Typography variant="body1">
-                          <strong>Посада:</strong>{" "}
-                          {currentUser.roles.join(", ")}
+                          <strong>Місто:</strong> {currentFilial.city}
                         </Typography>
                       </Grid>
                       <Grid>
                         <Typography variant="body1">
-                          <strong>Доступ:</strong>{" "}
-                          {currentUser.access ? "Дозволено" : "Заборонено"}
+                          <strong>Адреса:</strong> {currentFilial.address}
+                        </Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography variant="body1">
+                          <strong>Телефон:</strong> {currentFilial.phone}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -364,4 +284,4 @@ const CrmUserDetails = () => {
   return <>{content}</>;
 };
 
-export default CrmUserDetails;
+export default FilialDetails;

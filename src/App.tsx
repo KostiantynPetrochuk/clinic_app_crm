@@ -14,6 +14,8 @@ import {
   Home,
   CrmUsers,
   CrmUserDetails,
+  Filials,
+  FilialDetails,
 } from "./pages";
 
 import "./App.css";
@@ -36,6 +38,11 @@ function App() {
               <Route
                 path={`${APP_ROUTES.CRM_USERS}/:id`}
                 element={<CrmUserDetails />}
+              />
+              <Route path={APP_ROUTES.FILIALS} element={<Filials />} />
+              <Route
+                path={`${APP_ROUTES.FILIALS}/:id`}
+                element={<FilialDetails />}
               />
             </Route>
           </Route>
