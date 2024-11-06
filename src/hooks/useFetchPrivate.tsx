@@ -17,7 +17,7 @@ const useFetchPrivate = () => {
     if (!options.method) {
       options.method = "GET";
     }
-    options.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
+    options.headers["Authorization"] = `Bearer ${auth?.token}`;
     options.headers["Content-Type"] = "application/json";
     options.credentials = "include";
     options.mode = "cors";
@@ -32,18 +32,18 @@ const useFetchPrivate = () => {
         options.headers["Authorization"] = `Bearer ${newAccessToken}`;
         const newResponse = await fetch(`${API_URL}${url}`, options);
         const newResult = await newResponse.json();
-        return newResult;
+        return { data: newResult, error: null };
       }
 
       const result = await response.json();
-      return result;
+      return { data: result, error: null };
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
       } else {
         console.log(String(error));
       }
-      throw error;
+      return { data: null, error };
     }
   };
 

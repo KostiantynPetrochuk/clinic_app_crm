@@ -62,8 +62,8 @@ const Login = () => {
     try {
       startLoading();
       const body = {
-        phone_country_code: "+380",
-        phone_number: phone,
+        phoneCountryCode: "+380",
+        phoneNumber: phone,
         password: pwd,
       };
       const url = `${API_URL}signin`;

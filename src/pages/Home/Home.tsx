@@ -55,13 +55,13 @@ const Home = () => {
               elevation={24}
             >
               <List>
-                <Link to={APP_ROUTES.PATIENTS}>
-                  <ListItem key={"patients"} disablePadding>
+                <Link to={APP_ROUTES.CRM_USERS}>
+                  <ListItem key={"crm-users"} disablePadding>
                     <ListItemButton>
                       <ListItemIcon>
                         <GroupIcon />
                       </ListItemIcon>
-                      <ListItemText primary={"Пацієнти"} />
+                      <ListItemText primary={"Користувачі CRM"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

@@ -17,13 +17,10 @@ import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
 import { Paper } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import WorkIcon from "@mui/icons-material/Work";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-
 import { APP_ROUTES } from "../constants";
 import useLogout from "../hooks/useLogout";
-// import useAuth from "../hooks/useAuth";
 
 const Header = () => {
   const theme = useTheme();
@@ -31,7 +28,6 @@ const Header = () => {
   const [state, setState] = React.useState(false);
   const navigate = useNavigate();
   const logout = useLogout();
-  // const { auth } = useAuth();
   const signOut = async () => {
     await logout();
     navigate(APP_ROUTES.LOGIN);
@@ -99,23 +95,13 @@ const Header = () => {
                     </ListItemButton>
                   </ListItem>
                 </Link>
-                <Link to={APP_ROUTES.PATIENTS}>
-                  <ListItem key={"patients"} disablePadding>
+                <Link to={APP_ROUTES.CRM_USERS}>
+                  <ListItem key={"crm-users"} disablePadding>
                     <ListItemButton>
                       <ListItemIcon>
                         <GroupIcon />
                       </ListItemIcon>
-                      <ListItemText primary={"Пацієнти"} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-                <Link to={APP_ROUTES.ASSIGNMENTS}>
-                  <ListItem key={"assignments"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <WorkIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={"Прийоми"} />
+                      <ListItemText primary={"Користувачі CRM"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

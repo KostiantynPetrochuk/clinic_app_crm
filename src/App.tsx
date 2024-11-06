@@ -7,16 +7,20 @@ import { ROLES, APP_ROUTES } from "./constants";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import PersistLogin from "./components/PersistLogin";
-import { Login, Unauthorized, Missing, Home } from "./pages";
+import {
+  Login,
+  Unauthorized,
+  Missing,
+  Home,
+  CrmUsers,
+  CrmUserDetails,
+} from "./pages";
 
 import "./App.css";
 
 function App() {
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterDateFns}
-      adapterLocale={ukLocale}
-    >
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ukLocale}>
       <Routes>
         <Route path={APP_ROUTES.HOME} element={<Layout />}>
           {/* publick routes */}
@@ -27,6 +31,12 @@ function App() {
           <Route element={<PersistLogin />}>
             <Route element={<RequireAuth allowedRoles={[ROLES.Developer]} />}>
               <Route path={APP_ROUTES.HOME} element={<Home />} />
+              <Route path={APP_ROUTES.CRM_USERS} element={<CrmUsers />} />
+              {/* Додаємо новий маршрут для детальної інформації про користувача */}
+              <Route
+                path={`${APP_ROUTES.CRM_USERS}/:id`}
+                element={<CrmUserDetails />}
+              />
             </Route>
           </Route>
 

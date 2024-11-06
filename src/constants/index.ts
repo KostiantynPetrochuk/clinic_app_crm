@@ -8,10 +8,8 @@ export const ROLES = {
 export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
-  PATIENTS: "/patients",
-  ASSIGNMENTS: "/assignments",
-  DOCTORS: "/doctors",
+  CRM_USERS: "/crm-users",
   UNAUTHORIZED: "/unauthorized",
-};
+};  
 
 export const API_ROUTES = {};

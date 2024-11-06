@@ -6,8 +6,6 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HomeIcon from "@mui/icons-material/Home";
 import AppBar from "@mui/material/AppBar";
 import GroupIcon from "@mui/icons-material/Group";
-import WorkIcon from "@mui/icons-material/Work";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
@@ -22,19 +20,12 @@ const Footer = () => {
   if (currentPage === "" && value !== 0) {
     setValue(0);
   }
-  if (currentPage === "patients" && value !== 1) {
+  if (currentPage === "crm-users" && value !== 1) {
     setValue(1);
   }
-  if (currentPage === "doctors" && value !== 2) {
-    setValue(2);
-  }
-  if (currentPage === "assignments" && value !== 3) {
-    setValue(3);
-  }
   const navigateHome = () => navigate(APP_ROUTES.HOME);
-  const navigatePatients = () => navigate(APP_ROUTES.PATIENTS);
-  const navigateDoctors = () => navigate(APP_ROUTES.DOCTORS);
-  const navigateAssignments = () => navigate(APP_ROUTES.ASSIGNMENTS);
+  const navigateCrmUsers = () => navigate(APP_ROUTES.CRM_USERS);
+  const handleNavigation = (_: any, newValue: number) => setValue(newValue);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -43,9 +34,7 @@ const Footer = () => {
           <BottomNavigation
             showLabels
             value={value}
-            onChange={(_, newValue) => {
-              setValue(newValue);
-            }}
+            onChange={handleNavigation}
           >
             <BottomNavigationAction
               label="Домашня"
@@ -53,19 +42,9 @@ const Footer = () => {
               onClick={navigateHome}
             />
             <BottomNavigationAction
-              label="Пацієнти"
+              label="Користувачі CRM"
               icon={<GroupIcon />}
-              onClick={navigatePatients}
-            />
-            <BottomNavigationAction
-              label="Лікарі"
-              icon={<WorkIcon />}
-              onClick={navigateDoctors}
-            />
-            <BottomNavigationAction
-              label="Прийоми"
-              icon={<DirectionsCarIcon />}
-              onClick={navigateAssignments}
+              onClick={navigateCrmUsers}
             />
           </BottomNavigation>
         </AppBar>
