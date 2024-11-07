@@ -9,12 +9,17 @@ import {
   selectFilials,
   setFilials,
 } from "../store/features/filials/filialsSlice";
+import {
+  selectDoctors,
+  setDoctors,
+} from "../store/features/doctors/doctorsSlice";
 
 const useRefreshToken = () => {
   const dispatch = useAppDispatch();
   const { setAuth } = useAuth();
   const crmUsers = useAppSelector(selectCrmUsers);
   const filials = useAppSelector(selectFilials);
+  const doctors = useAppSelector(selectDoctors);
   const refresh = async () => {
     try {
       const refreshToken = window.localStorage.getItem("refreshToken");
@@ -67,6 +72,22 @@ const useRefreshToken = () => {
         });
         const filialsResult = await response.json();
         dispatch(setFilials(filialsResult));
+      }
+      if (!doctors.length) {
+        const response = await fetch(`${API_URL}doctors`, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${result.tokens.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+        });
+        const doctorsResult = await response.json();
+        dispatch(setDoctors(doctorsResult));
       }
       //
       return result.token;

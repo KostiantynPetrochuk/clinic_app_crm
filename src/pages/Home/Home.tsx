@@ -62,7 +62,7 @@ const Home = () => {
                       <ListItemIcon>
                         <GroupIcon />
                       </ListItemIcon>
-                      <ListItemText primary={"Користувачі CRM"} />
+                      <ListItemText primary={"Користувачі"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

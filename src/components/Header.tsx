@@ -15,10 +15,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
-import BusinessIcon from '@mui/icons-material/Business';
+import BusinessIcon from "@mui/icons-material/Business";
 import { Paper } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import LocalHospital from "@mui/icons-material/LocalHospital";
 import { useTheme } from "@mui/material/styles";
 import { APP_ROUTES } from "../constants";
 import useLogout from "../hooks/useLogout";
@@ -102,7 +103,7 @@ const Header = () => {
                       <ListItemIcon>
                         <GroupIcon />
                       </ListItemIcon>
-                      <ListItemText primary={"Користувачі CRM"} />
+                      <ListItemText primary={"Користувачі"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>
@@ -113,6 +114,16 @@ const Header = () => {
                         <BusinessIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Філії"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.DOCTORS}>
+                  <ListItem key={"doctors"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <LocalHospital />
+                      </ListItemIcon>
+                      <ListItemText primary={"Лікарі"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

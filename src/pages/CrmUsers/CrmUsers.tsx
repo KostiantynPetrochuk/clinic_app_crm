@@ -67,7 +67,7 @@ const CrmUsers = () => {
             elevation={24}
           >
             <Typography variant="h5" component="h2">
-              Користувачі CRM
+              Користувачі
             </Typography>
           </Paper>
           <Box

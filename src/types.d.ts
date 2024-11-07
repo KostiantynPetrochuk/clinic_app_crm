@@ -18,6 +18,16 @@ declare global {
     address: string;
     phone: string;
   }
+
+  interface Doctor {
+    id: number;
+    filialId: number;
+    lastName: string;
+    firstName: string;
+    middleName: string;
+    createdAt: string;
+    updatedAt: string;
+  }
 }
 
 export {};

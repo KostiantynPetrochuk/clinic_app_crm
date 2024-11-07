@@ -10,6 +10,7 @@ export const APP_ROUTES = {
   LOGIN: "/login",
   CRM_USERS: "/crm-users",
   FILIALS: "/filials",
+  DOCTORS: "/doctors",
   UNAUTHORIZED: "/unauthorized",
 };  
 

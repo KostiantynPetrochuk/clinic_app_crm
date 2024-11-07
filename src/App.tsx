@@ -16,6 +16,8 @@ import {
   CrmUserDetails,
   Filials,
   FilialDetails,
+  Doctors,
+  DoctorDetails,
 } from "./pages";
 
 import "./App.css";
@@ -43,6 +45,11 @@ function App() {
               <Route
                 path={`${APP_ROUTES.FILIALS}/:id`}
                 element={<FilialDetails />}
+              />
+              <Route path={APP_ROUTES.DOCTORS} element={<Doctors />} />
+              <Route
+                path={`${APP_ROUTES.DOCTORS}/:id`}
+                element={<DoctorDetails />}
               />
             </Route>
           </Route>
