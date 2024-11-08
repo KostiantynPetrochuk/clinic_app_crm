@@ -10,9 +10,16 @@ const crmUsersSlice = createSlice({
     setCrmUsers: (_, action) => {
       return action.payload;
     },
+    updateCrmUser: (state, action) => {
+      const { id, ...user } = action.payload;
+      const index = state.findIndex((user) => user.id === id);
+      if (index !== -1) {
+        state[index] = { ...state[index], ...user };
+      }
+    },
   },
 });
 
-export const { setCrmUsers } = crmUsersSlice.actions;
+export const { setCrmUsers, updateCrmUser } = crmUsersSlice.actions;
 export const selectCrmUsers = (state: RootState) => state.crmUsers;
 export default crmUsersSlice.reducer;

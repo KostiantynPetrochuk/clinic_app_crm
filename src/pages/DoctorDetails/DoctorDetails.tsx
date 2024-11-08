@@ -20,9 +20,11 @@ import useFetchPrivate from "../../hooks/useFetchPrivate";
 import useMessage from "../../hooks/useMessage";
 import useLoading from "../../hooks/useLoading";
 import { selectFilials } from "../../store/features/filials/filialsSlice";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
+import { updateDoctor } from "../../store/features/doctors/doctorsSlice";
 
 const DoctorDetails = () => {
+  const dispatch = useAppDispatch();
   const fetchPrivate = useFetchPrivate();
   const showMessage = useMessage();
   const { startLoading, stopLoading } = useLoading();
@@ -50,7 +52,7 @@ const DoctorDetails = () => {
   };
 
   const handleSubmit = () => {
-    const updateDoctor = async () => {
+    const updateCurrentDoctor = async () => {
       startLoading();
       const { data, error } = await fetchPrivate("doctors", {
         method: "PATCH",
@@ -65,11 +67,12 @@ const DoctorDetails = () => {
         });
         return;
       }
+      dispatch(updateDoctor(data));
       setCurrentDoctor(data);
       setEditMode(false);
       stopLoading();
     };
-    updateDoctor();
+    updateCurrentDoctor();
   };
 
   useEffect(() => {

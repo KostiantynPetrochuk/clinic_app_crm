@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -15,9 +15,11 @@ import {
 import useFetchPrivate from "../../hooks/useFetchPrivate";
 import useMessage from "../../hooks/useMessage";
 import useLoading from "../../hooks/useLoading";
-import { useEffect } from "react";
+import { useAppDispatch } from "../../hooks";
+import { updateFilial } from "../../store/features/filials/filialsSlice";
 
 const FilialDetails = () => {
+  const dispatch = useAppDispatch();
   const fetchPrivate = useFetchPrivate();
   const showMessage = useMessage();
   const { startLoading, stopLoading } = useLoading();
@@ -43,7 +45,7 @@ const FilialDetails = () => {
   };
 
   const handleSubmit = () => {
-    const updateFilial = async () => {
+    const updateCurrentFilial = async () => {
       startLoading();
       const { data, error } = await fetchPrivate("filials", {
         method: "PATCH",
@@ -58,11 +60,12 @@ const FilialDetails = () => {
         });
         return;
       }
+      dispatch(updateFilial(data));
       setCurrentFilial(data);
       setEditMode(false);
       stopLoading();
     };
-    updateFilial();
+    updateCurrentFilial();
   };
 
   useEffect(() => {

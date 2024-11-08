@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -20,9 +20,11 @@ import {
 import useFetchPrivate from "../../hooks/useFetchPrivate";
 import useMessage from "../../hooks/useMessage";
 import useLoading from "../../hooks/useLoading";
-import { useEffect } from "react";
+import { useAppDispatch } from "../../hooks";
+import { updateCrmUser } from "../../store/features/crmUsers/crmUsersSlice";
 
 const CrmUserDetails = () => {
+  const dispatch = useAppDispatch();
   const fetchPrivate = useFetchPrivate();
   const showMessage = useMessage();
   const { startLoading, stopLoading } = useLoading();
@@ -67,6 +69,7 @@ const CrmUserDetails = () => {
         return;
       }
       setCurrentUser(data?.user);
+      dispatch(updateCrmUser(data?.user));
       setEditMode(false);
       stopLoading();
     };

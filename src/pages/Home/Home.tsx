@@ -11,7 +11,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GroupIcon from "@mui/icons-material/Group";
-import BusinessIcon from '@mui/icons-material/Business';
+import BusinessIcon from "@mui/icons-material/Business";
+import LocalHospital from "@mui/icons-material/LocalHospital";
 import useLogout from "../../hooks/useLogout";
 import { APP_ROUTES } from "../../constants";
 
@@ -73,6 +74,16 @@ const Home = () => {
                         <BusinessIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Філії"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.DOCTORS}>
+                  <ListItem key={"doctors"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <LocalHospital />
+                      </ListItemIcon>
+                      <ListItemText primary={"Лікарі"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>
