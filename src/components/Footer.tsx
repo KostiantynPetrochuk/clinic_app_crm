@@ -13,6 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import LocalHospital from "@mui/icons-material/LocalHospital";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import LogoutIcon from "@mui/icons-material/Logout";
 import useLogout from "../hooks/useLogout";
 
@@ -51,6 +52,11 @@ const Footer = () => {
     handleClose();
     setValue(-1);
     navigate(APP_ROUTES.DOCTORS);
+  };
+  const navigatePatients = () => {
+    handleClose();
+    setValue(-1);
+    navigate(APP_ROUTES.PATIENTS);
   };
 
   const handleLogout = async () => {
@@ -108,6 +114,10 @@ const Footer = () => {
               <MenuItem onClick={navigateDoctors}>
                 <LocalHospital sx={{ mr: 1 }} color="action" />
                 Лікарі
+              </MenuItem>
+              <MenuItem onClick={navigatePatients}>
+                <AccountBoxIcon sx={{ mr: 1 }} color="action" />
+                Пацієнти
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <LogoutIcon sx={{ mr: 1 }} color="action" />

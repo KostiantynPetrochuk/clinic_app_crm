@@ -20,6 +20,7 @@ import { Paper } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LocalHospital from "@mui/icons-material/LocalHospital";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import { useTheme } from "@mui/material/styles";
 import { APP_ROUTES } from "../constants";
 import useLogout from "../hooks/useLogout";
@@ -124,6 +125,16 @@ const Header = () => {
                         <LocalHospital />
                       </ListItemIcon>
                       <ListItemText primary={"Лікарі"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.PATIENTS}>
+                  <ListItem key={"patients"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AccountBoxIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Пацієнти"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

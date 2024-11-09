@@ -28,6 +28,31 @@ declare global {
     createdAt: string;
     updatedAt: string;
   }
+
+  interface Patient {
+    id: number;
+    filialId: number;
+    phoneCountryCode: string;
+    phoneNumber: string;
+    lastName: string;
+    firstName: string;
+    middleName: string;
+    birthDate: {
+      Time: string;
+      Valid: boolean;
+    };
+    placeOfResidence: string;
+    sex: string;
+    passportSeries: string;
+    passportNumber: string;
+    idCardNumber: string;
+    placeOfWork: string;
+    position: string;
+    clientType: string;
+    cityOfResidence: string;
+    createdAt: string;
+    updatedAt: string;
+  }
 }
 
 export {};

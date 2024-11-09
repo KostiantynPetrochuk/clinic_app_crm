@@ -11,6 +11,7 @@ export const APP_ROUTES = {
   CRM_USERS: "/crm-users",
   FILIALS: "/filials",
   DOCTORS: "/doctors",
+  PATIENTS: "/patients",
   UNAUTHORIZED: "/unauthorized",
 };  
 
