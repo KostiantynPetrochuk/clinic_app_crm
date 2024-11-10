@@ -7,6 +7,7 @@ import crmUsersReducer from "./features/crmUsers/crmUsersSlice";
 import filialsReducer from "./features/filials/filialsSlice";
 import doctorsReducer from "./features/doctors/doctorsSlice";
 import patientsReducer from "./features/patients/patientsSlice";
+import applicationReducer from "./features/applications/applicationsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     filials: filialsReducer,
     doctors: doctorsReducer,
     patients: patientsReducer,
+    applications: applicationReducer,
     persist: persistReducer,
     loading: loadingReducer,
     message: messageReducer,

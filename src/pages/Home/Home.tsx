@@ -14,6 +14,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalHospital from "@mui/icons-material/LocalHospital";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import useLogout from "../../hooks/useLogout";
 import { APP_ROUTES } from "../../constants";
 
@@ -95,6 +96,16 @@ const Home = () => {
                         <AccountBoxIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Пацієнти"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.APPLICATIONS}>
+                  <ListItem key={"applications"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AppRegistrationIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Записи"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

@@ -53,6 +53,30 @@ declare global {
     createdAt: string;
     updatedAt: string;
   }
+
+  interface Application {
+    id: number;
+    patientId: number;
+    filialId: number;
+    startDateTime: string;
+    endDateTime: string;
+    description: string;
+    status: string;
+    cancelUserId: {
+      Int64: number;
+      Valid: boolean;
+    };
+    cancelReason: {
+      String: string;
+      Valid: boolean;
+    };
+    canceledAt: {
+      Time: string;
+      Valid: boolean;
+    };
+    createdAt: string;
+    updatedAt: string;
+  }
 }
 
 export {};

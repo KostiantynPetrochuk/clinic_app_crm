@@ -21,6 +21,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LocalHospital from "@mui/icons-material/LocalHospital";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { useTheme } from "@mui/material/styles";
 import { APP_ROUTES } from "../constants";
 import useLogout from "../hooks/useLogout";
@@ -135,6 +136,16 @@ const Header = () => {
                         <AccountBoxIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Пацієнти"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.APPLICATIONS}>
+                  <ListItem key={"applications"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AppRegistrationIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Записи"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

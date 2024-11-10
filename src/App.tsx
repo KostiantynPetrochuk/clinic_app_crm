@@ -20,6 +20,7 @@ import {
   DoctorDetails,
   Patients,
   PatientDetails,
+  Applications,
 } from "./pages";
 
 import "./App.css";
@@ -57,6 +58,10 @@ function App() {
               <Route
                 path={`${APP_ROUTES.PATIENTS}/:id`}
                 element={<PatientDetails />}
+              />
+              <Route
+                path={APP_ROUTES.APPLICATIONS}
+                element={<Applications />}
               />
             </Route>
           </Route>

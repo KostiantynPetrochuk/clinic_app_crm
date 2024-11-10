@@ -12,7 +12,8 @@ export const APP_ROUTES = {
   FILIALS: "/filials",
   DOCTORS: "/doctors",
   PATIENTS: "/patients",
+  APPLICATIONS: "/applications",
   UNAUTHORIZED: "/unauthorized",
-};  
+};
 
 export const API_ROUTES = {};
