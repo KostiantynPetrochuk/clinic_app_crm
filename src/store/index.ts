@@ -8,6 +8,8 @@ import filialsReducer from "./features/filials/filialsSlice";
 import doctorsReducer from "./features/doctors/doctorsSlice";
 import patientsReducer from "./features/patients/patientsSlice";
 import applicationReducer from "./features/applications/applicationsSlice";
+import pageDataReducer from "./features/pageData/pageDataSlice";
+import appointmentsReducer from "./features/appointments/appointmentsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +19,8 @@ export const store = configureStore({
     doctors: doctorsReducer,
     patients: patientsReducer,
     applications: applicationReducer,
+    appointments: appointmentsReducer,
+    pageData: pageDataReducer,
     persist: persistReducer,
     loading: loadingReducer,
     message: messageReducer,

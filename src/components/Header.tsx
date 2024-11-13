@@ -21,7 +21,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LocalHospital from "@mui/icons-material/LocalHospital";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import AirlineSeatReclineExtraIcon from "@mui/icons-material/AirlineSeatReclineExtra";
 import { useTheme } from "@mui/material/styles";
 import { APP_ROUTES } from "../constants";
 import useLogout from "../hooks/useLogout";
@@ -146,6 +147,16 @@ const Header = () => {
                         <AppRegistrationIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Записи"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.APPOINTMENTS}>
+                  <ListItem key={"appointments"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AirlineSeatReclineExtraIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Прийоми"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>

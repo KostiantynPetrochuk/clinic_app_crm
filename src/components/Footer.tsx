@@ -29,6 +29,7 @@ const Footer = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setValue(-1);
   };
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();

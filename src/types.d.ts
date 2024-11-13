@@ -74,8 +74,34 @@ declare global {
       Time: string;
       Valid: boolean;
     };
+    patientFirstName: string;
+    patientLastName: string;
+    patientMiddleName: string;
     createdAt: string;
     updatedAt: string;
+  }
+  interface Appointment {
+    id: number;
+    doctorId: number;
+    creatorId: number;
+    aReporterId: number;
+    filialId: number;
+    patientId: number;
+    serviceType: string;
+    recordType: string;
+    sourceOfInfo: string;
+    startDateTime: string;
+    endDateTime: string;
+    price: number;
+    status: string;
+    consentForTreatment: boolean;
+    consentForDataProcessing: boolean;
+    createdAt: string;
+    updatedAt: string;
+    //
+    patientFirstName: string;
+    patientLastName: string;
+    patientMiddleName: string;
   }
 }
 

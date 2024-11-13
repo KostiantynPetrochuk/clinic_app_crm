@@ -35,6 +35,11 @@ const useFetchPrivate = () => {
         return { data: newResult, error: null };
       }
 
+      if (!response.ok) {
+        const result = await response.json();
+        return { data: null, error: result };
+      }
+
       const result = await response.json();
       return { data: result, error: null };
     } catch (error) {

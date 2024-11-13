@@ -21,6 +21,8 @@ import {
   Patients,
   PatientDetails,
   Applications,
+  AddAppointment,
+  Appointments,
 } from "./pages";
 
 import "./App.css";
@@ -62,6 +64,14 @@ function App() {
               <Route
                 path={APP_ROUTES.APPLICATIONS}
                 element={<Applications />}
+              />
+              <Route
+                path={APP_ROUTES.APPOINTMENTS}
+                element={<Appointments />}
+              />
+              <Route
+                path={APP_ROUTES.ADD_APPOINTMENT}
+                element={<AddAppointment />}
               />
             </Route>
           </Route>

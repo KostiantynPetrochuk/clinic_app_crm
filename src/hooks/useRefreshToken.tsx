@@ -21,6 +21,10 @@ import {
   selectApplications,
   setApplications,
 } from "../store/features/applications/applicationsSlice";
+import {
+  selectAppointments,
+  setAppointments,
+} from "../store/features/appointments/appointmentsSlice";
 
 const useRefreshToken = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +34,7 @@ const useRefreshToken = () => {
   const doctors = useAppSelector(selectDoctors);
   const patients = useAppSelector(selectPatients);
   const applications = useAppSelector(selectApplications);
+  const appointments = useAppSelector(selectAppointments);
   const refresh = async () => {
     try {
       const refreshToken = window.localStorage.getItem("refreshToken");
@@ -130,6 +135,22 @@ const useRefreshToken = () => {
         });
         const applicationsResult = await response.json();
         dispatch(setApplications(applicationsResult));
+      }
+      if (!appointments.length) {
+        const response = await fetch(`${API_URL}appointments`, {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${result.tokens.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrerPolicy: "no-referrer",
+        });
+        const appointmentsResult = await response.json();
+        dispatch(setAppointments(appointmentsResult));
       }
       //
       return result.token;

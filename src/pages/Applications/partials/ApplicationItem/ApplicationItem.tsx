@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { format, parseISO } from "date-fns";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
+import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -11,14 +14,13 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import Badge from "@mui/material/Badge";
-import { format, parseISO } from "date-fns";
-import { useAppSelector } from "../../../../hooks";
-import { selectPatients } from "../../../../store/features/patients/patientsSlice";
+
+import { useAppSelector, useAppDispatch } from "../../../../hooks";
 import { selectFilials } from "../../../../store/features/filials/filialsSlice";
 import { selectCrmUsers } from "../../../../store/features/crmUsers/crmUsersSlice";
-import { CancelButton } from "../";
-
-import Button from "@mui/material/Button";
+import { CancelButton } from "..";
+import { APP_ROUTES } from "../../../../constants";
+import { setPageData } from "../../../../store/features/pageData/pageDataSlice";
 
 type Badge = {
   content: string;
@@ -30,11 +32,11 @@ type ApplicationItemProps = {
 };
 
 const ApplicationItem = ({ application }: ApplicationItemProps) => {
-  const patients = useAppSelector(selectPatients);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const filials = useAppSelector(selectFilials);
   const crmUsers = useAppSelector(selectCrmUsers);
-  const patient = patients.find((p) => p.id === application.patientId);
-  const filial = filials.find((f) => f.id === patient?.filialId);
+  const filial = filials.find((f) => f.id === application.filialId);
   const [open, setOpen] = useState(false);
   const handleClick = () => {
     setOpen(!open);
@@ -45,6 +47,19 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
   };
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+
+  const handleClickAddAppointment = () => {
+    dispatch(
+      setPageData({
+        page: APP_ROUTES.ADD_APPOINTMENT,
+        data: {
+          patientId: application.patientId,
+          applicationId: application.id,
+        },
+      })
+    );
+    navigate(APP_ROUTES.ADD_APPOINTMENT);
   };
 
   let canceledInfo = null;
@@ -59,7 +74,7 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
       <>
         <ListItem
           sx={{
-            pl: 4,
+            pl: 9,
             display: "flex",
           }}
         >
@@ -87,7 +102,7 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
             />
           </Box>
         </ListItem>
-        <ListItem sx={{ pl: 4, flexWrap: "wrap" }}>
+        <ListItem sx={{ pl: 9, flexWrap: "wrap" }}>
           <ListItemText
             sx={{ marginRight: 2, flexGrow: 10 }}
             primary="Причина скасування:"
@@ -106,6 +121,11 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
   if (application.status === "canceled") {
     badge.content = "Скасований";
     badge.color = "error";
+  }
+
+  if (application.status === "approved") {
+    badge.content = "Підтверджений";
+    badge.color = "success";
   }
 
   return (
@@ -136,7 +156,7 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
             >
               <ListItemText
                 sx={{ marginRight: 2, flexGrow: 10 }}
-                primary={`${patient?.lastName} ${patient?.firstName} ${patient?.middleName}`}
+                primary={`${application.patientLastName} ${application.patientFirstName} ${application.patientMiddleName}`}
                 secondary={`${filial?.city}`}
               />
               <ListItemText
@@ -156,7 +176,7 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
           </ListItemButton>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem sx={{ pl: 4, flexWrap: "wrap" }}>
+              <ListItem sx={{ pl: 9, flexWrap: "wrap" }}>
                 <ListItemText
                   sx={{ marginRight: 2, flexGrow: 10 }}
                   primary="Опис проблеми:"
@@ -189,6 +209,7 @@ const ApplicationItem = ({ application }: ApplicationItemProps) => {
                       variant="contained"
                       startIcon={<EditIcon />}
                       sx={{ flex: "1 1 auto", minWidth: "120px" }}
+                      onClick={handleClickAddAppointment}
                     >
                       Записати на прийом
                     </Button>
