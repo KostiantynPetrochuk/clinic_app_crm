@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Grid2 as Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -10,6 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import BackspaceIcon from "@mui/icons-material/Backspace";
 import {
   TextField,
   MenuItem,
@@ -34,6 +36,7 @@ import useMessage from "../../hooks/useMessage";
 import { selectFilials } from "../../store/features/filials/filialsSlice";
 import { selectDoctors } from "../../store/features/doctors/doctorsSlice";
 import useLoading from "../../hooks/useLoading";
+import { APP_ROUTES } from "../../constants";
 
 type ButtonVariant = "contained" | "outlined" | "text";
 
@@ -52,6 +55,7 @@ const generateTimeSlots = (start: Date, end: Date) => {
 };
 
 const AddAppointment = () => {
+  const navigate = useNavigate();
   const showMessage = useMessage();
   const { startLoading, stopLoading } = useLoading();
   const fetchPrivate = useFetchPrivate();
@@ -237,6 +241,7 @@ const AddAppointment = () => {
   };
 
   const handleSubmitAppointment = async () => {
+    startLoading();
     const body = {
       doctorId: appointmentFormData.doctorId,
       filialId: appointmentFormData.filialId,
@@ -262,8 +267,11 @@ const AddAppointment = () => {
         text: "Не вдалось створити запис на прийом.",
         severity: "error",
       });
+      stopLoading();
       return;
     }
+    stopLoading();
+    navigate(APP_ROUTES.APPOINTMENTS);
   };
 
   useEffect(() => {
@@ -993,7 +1001,7 @@ const AddAppointment = () => {
               </Grid>
               <Button
                 variant="contained"
-                startIcon={<SaveIcon />}
+                startIcon={<BackspaceIcon />}
                 sx={{ flex: "1 1 auto", minWidth: "120px", marginTop: 2 }}
                 onClick={handleClearTime}
               >
@@ -1195,6 +1203,7 @@ const AddAppointment = () => {
                 padding: 2,
                 textAlign: "center",
                 marginTop: 2,
+                marginBottom: 2,
                 width: "100%",
               }}
               elevation={24}

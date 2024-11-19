@@ -84,7 +84,14 @@ declare global {
     id: number;
     doctorId: number;
     creatorId: number;
-    aReporterId: number;
+    aReporterId: {
+      Int64: number;
+      Valid: boolean;
+    };
+    diagnosisAdderId: {
+      Int64: number;
+      Valid: boolean;
+    };
     filialId: number;
     patientId: number;
     serviceType: string;
@@ -96,6 +103,26 @@ declare global {
     status: string;
     consentForTreatment: boolean;
     consentForDataProcessing: boolean;
+    paymentType: {
+      String: string;
+      Valid: boolean;
+    };
+    diagnosis: {
+      String: string;
+      Valid: boolean;
+    };
+    recommendations: {
+      String: string;
+      Valid: boolean;
+    };
+    comment: {
+      String: string;
+      Valid: boolean;
+    };
+    cancelReason: {
+      String: string;
+      Valid: boolean;
+    };
     createdAt: string;
     updatedAt: string;
     //
