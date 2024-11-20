@@ -523,7 +523,7 @@ const PatientDetails = () => {
                       </Grid>
                       <Grid>
                         <Typography variant="body1">
-                          <strong>Сатть:</strong>{" "}
+                          <strong>Стать:</strong>{" "}
                           {currentPatient?.sex || "Не вказано"}
                         </Typography>
                       </Grid>

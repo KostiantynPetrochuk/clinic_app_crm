@@ -390,7 +390,7 @@ const AddAppointment = () => {
           </Grid>
           <Grid>
             <Typography variant="body1">
-              <strong>Сатть:</strong> {currentPatient?.sex || "Не вказано"}
+              <strong>Стать:</strong> {currentPatient?.sex || "Не вказано"}
             </Typography>
           </Grid>
           <Grid>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -10,6 +10,7 @@ import useLoading from "../../hooks/useLoading";
 import useMessage from "../../hooks/useMessage";
 import useFetchPrivate from "../../hooks/useFetchPrivate";
 import { setApplications } from "../../store/features/applications/applicationsSlice";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 
 const Applications = () => {
   const dispatch = useAppDispatch();
@@ -17,11 +18,18 @@ const Applications = () => {
   const showMessage = useMessage();
   const fetchPrivate = useFetchPrivate();
   const applications = useAppSelector(selectApplications);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const handleChangeDate = (date: Date) => setSelectedDate(date);
+
   useEffect(() => {
     const fetchData = async () => {
       startLoading();
+      const dateString = selectedDate.toISOString();
+      const params = new URLSearchParams({ date: dateString });
+      const url = `applications?${params.toString()}`;
       try {
-        const { data, error } = await fetchPrivate("applications");
+        const { data, error } = await fetchPrivate(url);
         if (error) {
           showMessage({
             title: "Помилка!",
@@ -42,7 +50,8 @@ const Applications = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedDate]);
+
   return (
     <Container component="main">
       <Box>
@@ -59,13 +68,28 @@ const Applications = () => {
               Записи
             </Typography>
           </Paper>
+          <Paper
+            sx={{
+              padding: 2,
+              textAlign: "center",
+              marginTop: 2,
+              width: "100%",
+            }}
+            elevation={24}
+          >
+            <DateCalendar
+              value={selectedDate}
+              showDaysOutsideCurrentMonth
+              fixedWeekNumber={6}
+              onChange={handleChangeDate}
+            />
+          </Paper>
           <Box
             component="div"
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              marginTop: 10,
               padding: 2,
             }}
           >
