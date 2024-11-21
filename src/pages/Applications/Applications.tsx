@@ -11,14 +11,30 @@ import useMessage from "../../hooks/useMessage";
 import useFetchPrivate from "../../hooks/useFetchPrivate";
 import { setApplications } from "../../store/features/applications/applicationsSlice";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import { selectFilials } from "../../store/features/filials/filialsSlice";
+
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { selectCrmUsers } from "../../store/features/crmUsers/crmUsersSlice";
 
 const Applications = () => {
   const dispatch = useAppDispatch();
   const { startLoading, stopLoading } = useLoading();
   const showMessage = useMessage();
   const fetchPrivate = useFetchPrivate();
+  const filials = useAppSelector(selectFilials);
+  const crmUsers = useAppSelector(selectCrmUsers);
   const applications = useAppSelector(selectApplications);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedStatus, setSelectedStatus] = useState<string>("new");
+  const [selectedFilial, setSelectedFilial] = useState<number>(1);
+  const [canceledByUser, setCanceledByUser] = useState<number | string>("");
 
   const handleChangeDate = (date: Date) => setSelectedDate(date);
 
@@ -26,7 +42,12 @@ const Applications = () => {
     const fetchData = async () => {
       startLoading();
       const dateString = selectedDate.toISOString();
-      const params = new URLSearchParams({ date: dateString });
+      const params = new URLSearchParams({
+        date: dateString,
+        status: selectedStatus,
+        filialId: selectedFilial.toString(),
+        canceledByUser: canceledByUser.toString() || "0",
+      });
       const url = `applications?${params.toString()}`;
       try {
         const { data, error } = await fetchPrivate(url);
@@ -50,7 +71,7 @@ const Applications = () => {
       }
     };
     fetchData();
-  }, [selectedDate]);
+  }, [selectedDate, selectedStatus, selectedFilial, canceledByUser]);
 
   return (
     <Container component="main">
@@ -83,6 +104,95 @@ const Applications = () => {
               fixedWeekNumber={6}
               onChange={handleChangeDate}
             />
+          </Paper>
+          <Paper
+            sx={{
+              padding: 2,
+              textAlign: "center",
+              marginTop: 2,
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr",
+                md: "1fr 1fr 0.4fr",
+              },
+              gap: 2,
+            }}
+            elevation={24}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Філія</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedFilial}
+                label="Філія"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSelectedFilial(Number(value));
+                }}
+              >
+                {filials.map((filial) => (
+                  <MenuItem key={filial.id} value={filial.id}>
+                    {filial.city}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Скасував</InputLabel>
+              <Select
+                disabled={selectedStatus != "canceled" && canceledByUser === ""}
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={canceledByUser}
+                label="Скасував"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setCanceledByUser(Number(value));
+                }}
+              >
+                {crmUsers.map((crmUser) => (
+                  <MenuItem key={crmUser.id} value={crmUser.id}>
+                    {crmUser.lastName} {crmUser.firstName} {crmUser.middleName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <FormLabel id="demo-radio-buttons-group-label">Статус</FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="female"
+                name="radio-buttons-group"
+              >
+                <FormControlLabel
+                  value="new"
+                  control={<Radio checked={selectedStatus === "new"} />}
+                  label="Новий"
+                  onChange={() => {
+                    setCanceledByUser("");
+                    setSelectedStatus("new");
+                  }}
+                />
+                <FormControlLabel
+                  value="approved"
+                  control={<Radio checked={selectedStatus === "approved"} />}
+                  label="Підтверджений"
+                  onChange={() => {
+                    setCanceledByUser("");
+                    setSelectedStatus("approved");
+                  }}
+                />
+                <FormControlLabel
+                  value="canceled"
+                  control={<Radio checked={selectedStatus === "canceled"} />}
+                  label="Скасований"
+                  onChange={() => setSelectedStatus("canceled")}
+                />
+              </RadioGroup>
+            </FormControl>
           </Paper>
           <Box
             component="div"
