@@ -36,7 +36,7 @@ export const RECORD_TYPES = {
 export const SOURCE_OF_INFO = {
   external_advertising: "Зовнішня реклама",
   instagram: "Інстаграм",
-  facebook: "Фуйсбук",
+  facebook: "Фейсбук",
   print_advertising: "Друкована реклама",
   regular_customer: "Постійний клієнт",
   friends: "Друзі",

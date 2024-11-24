@@ -1162,7 +1162,7 @@ const AddAppointment = () => {
                         Інстаграм
                       </MenuItem>
                       <MenuItem key={3} value="facebook">
-                        Фуйсбук
+                        Фейсбук
                       </MenuItem>
                       <MenuItem key={4} value="print_advertising">
                         Друкована реклама

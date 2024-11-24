@@ -111,7 +111,7 @@ const useRefreshToken = () => {
         dispatch(setPatients(patientsResult));
       }
       //
-      return result.token;
+      return result?.tokens?.accessToken;
     } catch (error) {
       return false;
     }
