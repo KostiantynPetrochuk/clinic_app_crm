@@ -28,7 +28,7 @@ import {
   setMilliseconds,
 } from "date-fns";
 
-import { useAppSelector } from "../../hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 import { selectPageData } from "../../store/features/pageData/pageDataSlice";
 import { selectApplications } from "../../store/features/applications/applicationsSlice";
 import useFetchPrivate from "../../hooks/useFetchPrivate";
@@ -36,7 +36,8 @@ import useMessage from "../../hooks/useMessage";
 import { selectFilials } from "../../store/features/filials/filialsSlice";
 import { selectDoctors } from "../../store/features/doctors/doctorsSlice";
 import useLoading from "../../hooks/useLoading";
-import { APP_ROUTES } from "../../constants";
+import { setPageData } from "../../store/features/pageData/pageDataSlice";
+import { APP_ROUTES, WORKING_TIME } from "../../constants";
 
 type ButtonVariant = "contained" | "outlined" | "text";
 
@@ -55,6 +56,7 @@ const generateTimeSlots = (start: Date, end: Date) => {
 };
 
 const AddAppointment = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const showMessage = useMessage();
   const { startLoading, stopLoading } = useLoading();
@@ -70,10 +72,11 @@ const AddAppointment = () => {
   const [currentPatient, setCurrentPatient] = useState<Patient>();
   const patientFilial = filials.find((f) => f.id === currentPatient?.filialId);
   const [editPatient, setEditPatient] = useState(false);
+  const [bookingTime, setBookingTime] = useState<string[]>([]);
   const [appointmentFormData, setAppointmentFormData] = useState({
     doctorId: "",
     applicationId: currentApplication?.id || "",
-    filialId: "",
+    filialId: currentApplication?.filialId || "1",
     patientId: currentPatient?.id || "",
     serviceType: "",
     recordType: "",
@@ -170,7 +173,29 @@ const AddAppointment = () => {
         }));
         return;
       }
-
+      const startTimeStr = startDate.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const endTimeStr = endDate.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const startIndex = WORKING_TIME.indexOf(startTimeStr);
+      const endIndex = WORKING_TIME.indexOf(endTimeStr);
+      const selectedTimeSlots = WORKING_TIME.slice(startIndex, endIndex + 1);
+      const isOverlapping = selectedTimeSlots.some((time) =>
+        bookingTime.includes(time)
+      );
+      if (isOverlapping) {
+        console.log("Selected time slots overlap with booked time slots");
+        setAppointmentFormData((prev) => ({
+          ...prev,
+          startDateTime: "",
+          endDateTime: "",
+        }));
+        return;
+      }
       setAppointmentFormData((prev) => ({
         ...prev,
         endDateTime: end.toISOString(),
@@ -186,16 +211,6 @@ const AddAppointment = () => {
         endDateTime: "",
       }));
     }
-    // const startDate = new Date(appointmentFormData.startDateTime);
-    // const endDate = new Date(appointmentFormData.endDateTime);
-    // if (
-    //   appointmentFormData.startDateTime &&
-    //   !appointmentFormData.endDateTime &&
-    //   startDate > endDate
-    // ) {
-    //   console.log("Початок пізніше кінця");
-    //   console.log("Скинути");
-    // }
   };
 
   const handleSubmitPatient = async () => {
@@ -256,11 +271,10 @@ const AddAppointment = () => {
       consentForTreatment: appointmentFormData.consentForTreatment,
       consentForDataProcessing: appointmentFormData.consentForDataProcessing,
     };
-    const { data, error } = await fetchPrivate("appointments", {
+    const { error } = await fetchPrivate("appointments", {
       method: "POST",
       body: JSON.stringify(body),
     });
-    console.log({ data });
     if (error) {
       showMessage({
         title: "Помилка!",
@@ -270,6 +284,7 @@ const AddAppointment = () => {
       stopLoading();
       return;
     }
+    dispatch(setPageData({}));
     stopLoading();
     navigate(APP_ROUTES.APPOINTMENTS);
   };
@@ -333,6 +348,65 @@ const AddAppointment = () => {
       }));
     }
   }, [currentPatient]);
+
+  useEffect(() => {
+    const fetchBookingTime = async () => {
+      try {
+        startLoading();
+        const year = selectedDate.getFullYear();
+        const month = selectedDate.getMonth() + 1;
+        const day = selectedDate.getDate();
+        const currentFilialId = appointmentFormData.filialId;
+        const params = new URLSearchParams({
+          filialId: currentFilialId.toString(),
+          date: `${year}-${month}-${day}`,
+        });
+        const url = `booking?${params.toString()}`;
+        const { data, error } = await fetchPrivate(url);
+        if (error) {
+          showMessage({
+            title: "Помилка!",
+            text: "Не вдалось отримати зайнятий час.",
+            severity: "error",
+          });
+          return;
+        }
+        let currentBookedTime: string[] = [];
+        if (currentApplication) {
+          const currentStartTimeStr = currentApplication?.startDateTime;
+          const currentEndTimeStr = currentApplication?.endDateTime;
+          const currentStartTime = new Date(currentStartTimeStr);
+          const currentEndTime = new Date(currentEndTimeStr);
+          const currentStart = currentStartTime.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const currentEnd = currentEndTime.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const currentIndex = WORKING_TIME.indexOf(currentStart);
+          const endIndex = WORKING_TIME.indexOf(currentEnd);
+          currentBookedTime = WORKING_TIME.slice(currentIndex, endIndex + 1);
+          const updatedBookedTime = data.bookedTime.filter(
+            (time: string) => !currentBookedTime.includes(time)
+          );
+          setBookingTime(updatedBookedTime);
+        } else {
+          setBookingTime(data.bookedTime);
+        }
+      } catch (error) {
+        showMessage({
+          title: "Помилка!",
+          text: "Не вдалось отримати зайнятий час.",
+          severity: "error",
+        });
+      } finally {
+        stopLoading();
+      }
+    };
+    fetchBookingTime();
+  }, [selectedDate, appointmentFormData.filialId]);
 
   let patientContent = null;
   if (patientLoading) {
@@ -967,10 +1041,13 @@ const AddAppointment = () => {
                   const [hours, minutes] = time.split(":");
                   slotDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
                   let buttonVariant: ButtonVariant = "outlined";
-                  // let disabled = false;
+                  let disabled = false;
                   const startString = appointmentFormData.startDateTime;
                   const endString = appointmentFormData.endDateTime;
-                  if (startString && !endString) {
+                  if (bookingTime?.includes(time)) {
+                    buttonVariant = "outlined";
+                    disabled = true;
+                  } else if (startString && !endString) {
                     const start = new Date(startString);
                     if (slotDate.getTime() === start.getTime()) {
                       buttonVariant = "contained";
@@ -989,6 +1066,7 @@ const AddAppointment = () => {
                   return (
                     <Grid key={index}>
                       <Button
+                        disabled={disabled}
                         onClick={() => handleClickTimeSlot(time)}
                         variant={buttonVariant}
                         fullWidth
