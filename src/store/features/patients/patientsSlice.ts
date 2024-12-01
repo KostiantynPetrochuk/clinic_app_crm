@@ -17,9 +17,12 @@ const patientsSlice = createSlice({
         state[index] = { ...state[index], ...patient };
       }
     },
+    addPatient: (state, action) => {
+      state.push(action.payload);
+    },
   },
 });
 
-export const { setPatients, updatePatient } = patientsSlice.actions;
+export const { setPatients, updatePatient, addPatient } = patientsSlice.actions;
 export const selectPatients = (state: RootState) => state.patients;
 export default patientsSlice.reducer;

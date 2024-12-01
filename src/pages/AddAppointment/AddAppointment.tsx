@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
+import SearchIcon from "@mui/icons-material/Search";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
@@ -35,7 +36,13 @@ import useFetchPrivate from "../../hooks/useFetchPrivate";
 import useMessage from "../../hooks/useMessage";
 import { selectFilials } from "../../store/features/filials/filialsSlice";
 import { selectDoctors } from "../../store/features/doctors/doctorsSlice";
+import {
+  selectPatients,
+  addPatient,
+} from "../../store/features/patients/patientsSlice";
 import useLoading from "../../hooks/useLoading";
+import AddIcon from "@mui/icons-material/Add";
+import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 import { setPageData } from "../../store/features/pageData/pageDataSlice";
 import { APP_ROUTES, WORKING_TIME } from "../../constants";
 
@@ -64,15 +71,23 @@ const AddAppointment = () => {
   const filials = useAppSelector(selectFilials);
   const doctors = useAppSelector(selectDoctors);
   const pageData = useAppSelector(selectPageData);
+  const patients = useAppSelector(selectPatients);
   const patientId = pageData.data?.patientId;
+  const [currentPatientId, setCurrentPatientId] = useState(patientId ?? "");
   const applicationId = pageData.data?.applicationId;
   const applications = useAppSelector(selectApplications);
   const currentApplication = applications.find((a) => a.id === applicationId);
   const [patientLoading, setPatientLoading] = useState(true);
-  const [currentPatient, setCurrentPatient] = useState<Patient>();
+  const [currentPatient, setCurrentPatient] = useState<Patient | null>(null);
   const patientFilial = filials.find((f) => f.id === currentPatient?.filialId);
-  const [editPatient, setEditPatient] = useState(false);
   const [bookingTime, setBookingTime] = useState<string[]>([]);
+  const [foundedPatient, setFoundedPatient] = useState<Patient>();
+  const [searchPatientPhone, setSearchPatientPhone] = useState("");
+  const patientFormStateInitial = currentPatientId ? "show" : "search";
+  const [patientFormState, setPatientFormState] = useState<
+    "search" | "edit" | "add" | "show"
+  >(patientFormStateInitial);
+
   const [appointmentFormData, setAppointmentFormData] = useState({
     doctorId: "",
     applicationId: currentApplication?.id || "",
@@ -120,13 +135,25 @@ const AddAppointment = () => {
 
   const timeSlots = generateTimeSlots(startTime, endTime);
 
+  const onChangeSearchPatientPhone = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    const numericValue = value.replace(/\D/g, "");
+    setSearchPatientPhone(numericValue);
+  };
+
+  const handleSearchPatient = (event: any) => {
+    event.preventDefault();
+    const foundPatient = patients.find(
+      (p) => p.phoneNumber === searchPatientPhone
+    );
+    setFoundedPatient(foundPatient);
+  };
+
   const handleChangePatientData = (event: any) => {
     const { name, value } = event.target;
     setPatientFormData({ ...patientFormData, [name]: value });
-  };
-
-  const handleSetEditPatient = () => {
-    setEditPatient((prev) => !prev);
   };
 
   const handleChangeDate = (date: Date) => {
@@ -213,7 +240,50 @@ const AddAppointment = () => {
     }
   };
 
-  const handleSubmitPatient = async () => {
+  const handleSubmitCreatePatient = async () => {
+    const createNewPatient = async () => {
+      startLoading();
+      const body = {
+        filialId: patientFormData.filialId,
+        phoneCountryCode: patientFormData.phone.slice(0, 4),
+        phoneNumber: patientFormData.phone.slice(4),
+        firstName: patientFormData.firstName,
+        lastName: patientFormData.lastName,
+        middleName: patientFormData.middleName,
+        birthDate: patientFormData.birthDate,
+        placeOfResidence: patientFormData.placeOfResidence,
+        sex: patientFormData.sex,
+        passportSeries: patientFormData.passportSeries,
+        passportNumber: patientFormData.passportNumber,
+        idCardNumber: patientFormData.idCardNumber,
+        placeOfWork: patientFormData.placeOfWork,
+        position: patientFormData.position,
+        clientType: patientFormData.clientType,
+        cityOfResidence: patientFormData.cityOfResidence,
+      };
+      const { data, error } = await fetchPrivate("patients", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      if (error) {
+        stopLoading();
+        showMessage({
+          title: "Помилка!",
+          text: "Не вдалось створити пацієнта.",
+          severity: "error",
+        });
+        return;
+      }
+      dispatch(addPatient(data));
+      setCurrentPatient(data);
+      setCurrentPatientId(data.id);
+      setPatientFormState("show");
+      stopLoading();
+    };
+    createNewPatient();
+  };
+
+  const handleSubmitUpdatePatient = async () => {
     const updateCurrentPatient = async () => {
       startLoading();
       const body = {
@@ -249,8 +319,8 @@ const AddAppointment = () => {
         return;
       }
       setCurrentPatient(data);
-      handleSetEditPatient();
       stopLoading();
+      setPatientFormState("show");
     };
     updateCurrentPatient();
   };
@@ -293,7 +363,9 @@ const AddAppointment = () => {
     const fetchData = async () => {
       setPatientLoading(true);
       try {
-        const { data, error } = await fetchPrivate("patients/" + patientId);
+        const { data, error } = await fetchPrivate(
+          "patients/" + currentPatientId
+        );
         if (error) {
           showMessage({
             title: "Помилка!",
@@ -313,7 +385,7 @@ const AddAppointment = () => {
         setPatientLoading(false);
       }
     };
-    if (patientId) {
+    if (currentPatientId) {
       fetchData();
     } else {
       setPatientLoading(false);
@@ -412,7 +484,7 @@ const AddAppointment = () => {
   if (patientLoading) {
     patientContent = "Завантаження даних пацієнта...";
   }
-  if (!patientLoading && currentPatient && !editPatient) {
+  if (!patientLoading && currentPatient && patientFormState === "show") {
     patientContent = (
       <>
         <Grid
@@ -510,19 +582,39 @@ const AddAppointment = () => {
             </Typography>
           </Grid>
         </Grid>
-        <Button
-          variant="contained"
-          startIcon={<EditIcon />}
-          sx={{ flex: "1 1 auto", minWidth: "120px" }}
-          onClick={handleSetEditPatient}
+        <Grid
+          container
+          spacing={2}
+          justifyContent="space-between"
+          sx={{ mt: 2, width: "100%" }}
         >
-          Редагувати
-        </Button>
+          <Button
+            variant="contained"
+            startIcon={<EditIcon />}
+            sx={{ flex: "1 1 auto", minWidth: "120px" }}
+            onClick={() => {
+              setPatientFormState("edit");
+            }}
+          >
+            Редагувати
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<EditIcon />}
+            sx={{ flex: "1 1 auto", minWidth: "120px" }}
+            onClick={() => {
+              console.log("Редагування пацієнта");
+              setPatientFormState("search");
+            }}
+          >
+            Вибрати іншого
+          </Button>
+        </Grid>
       </>
     );
   }
 
-  if (!patientLoading && currentPatient && editPatient) {
+  if (!patientLoading && patientFormState === "edit") {
     patientContent = (
       <>
         <Grid
@@ -745,7 +837,9 @@ const AddAppointment = () => {
               sx={{ flex: "1 1 auto", minWidth: "120px" }}
               color="error"
               fullWidth
-              onClick={handleSetEditPatient}
+              onClick={() => {
+                setPatientFormState("show");
+              }}
             >
               Скасувати
             </Button>
@@ -755,7 +849,7 @@ const AddAppointment = () => {
               startIcon={<SaveIcon />}
               variant="contained"
               fullWidth
-              onClick={handleSubmitPatient}
+              onClick={handleSubmitUpdatePatient}
             >
               Зберегти
             </Button>
@@ -765,214 +859,367 @@ const AddAppointment = () => {
     );
   }
 
-  if (!patientLoading && !patientId) {
+  if (!patientLoading && patientFormState === "add") {
+    patientContent = (
+      <>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Прізвище"
+              name="lastName"
+              value={patientFormData.lastName}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Ім'я"
+              name="firstName"
+              value={patientFormData.firstName}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="По-батькові"
+              name="middleName"
+              value={patientFormData.middleName}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Телефон"
+              name="phone"
+              value={patientFormData.phone}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <DatePicker
+              sx={{ width: "100%" }}
+              label="Дата народження"
+              name="birthDate"
+              value={
+                patientFormData.birthDate
+                  ? parseISO(patientFormData.birthDate)
+                  : null
+              }
+              onChange={(date) => {
+                if (!date) return;
+                const updatedDate = setMilliseconds(
+                  setSeconds(setMinutes(setHours(date, 12), 0), 0),
+                  0
+                );
+                setPatientFormData((prev) => ({
+                  ...prev,
+                  birthDate: updatedDate.toISOString(),
+                }));
+              }}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Місце прописки"
+              name="placeOfResidence"
+              value={patientFormData.placeOfResidence}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Стать</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={patientFormData.sex}
+                label="Стать"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setPatientFormData((prev) => ({
+                    ...prev,
+                    sex: value,
+                  }));
+                }}
+              >
+                <MenuItem key={1} value="male">
+                  Чоловік
+                </MenuItem>
+                <MenuItem key={2} value="female">
+                  Жінка
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Серія паспорту"
+              name="passportSeries"
+              value={patientFormData.passportSeries}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Номер паспорту"
+              name="passportNumber"
+              value={patientFormData.passportNumber}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Id картка"
+              name="idCardNumber"
+              value={patientFormData.idCardNumber}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Місце роботи"
+              name="placeOfWork"
+              value={patientFormData.placeOfWork}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Посада"
+              name="position"
+              value={patientFormData.position}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Тип клієнта</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={patientFormData.clientType}
+                label="Тип клієнта"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setPatientFormData((prev) => ({
+                    ...prev,
+                    clientType: value,
+                  }));
+                }}
+              >
+                <MenuItem key={1} value="civil">
+                  Цивільний
+                </MenuItem>
+                <MenuItem key={2} value="military">
+                  Військовий
+                </MenuItem>
+                <MenuItem key={3} value="vpo">
+                  ВПО
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Місце проживання"
+              name="cityOfResidence"
+              value={patientFormData.cityOfResidence}
+              onChange={handleChangePatientData}
+            />
+          </Grid>
+          <Grid width={1}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Філія</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={patientFormData.filialId}
+                label="Філія"
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setPatientFormData((prev) => ({
+                    ...prev,
+                    filialId: value,
+                  }));
+                }}
+              >
+                {filials.map((filial) => (
+                  <MenuItem key={filial.id} value={filial.id}>
+                    {filial.city}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing={2}
+          justifyContent="space-between"
+          sx={{ mt: 2, width: "100%" }}
+        >
+          <Grid>
+            <Button
+              variant="outlined"
+              startIcon={<CancelIcon />}
+              sx={{ flex: "1 1 auto", minWidth: "120px" }}
+              color="error"
+              fullWidth
+              onClick={() => {
+                setPatientFormState("search");
+              }}
+            >
+              Скасувати
+            </Button>
+          </Grid>
+          <Grid>
+            <Button
+              startIcon={<SaveIcon />}
+              variant="contained"
+              fullWidth
+              onClick={handleSubmitCreatePatient}
+            >
+              Зберегти
+            </Button>
+          </Grid>
+        </Grid>
+      </>
+    );
+  }
+  if (!patientLoading && patientFormState === "search") {
     patientContent = (
       <Grid
         container
         display={"grid"}
         gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
         spacing={1}
-        sx={{ mt: 2, textAlign: "left" }}
+        sx={{ mt: 2, alignItems: "center" }}
       >
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Прізвище"
-            name="lastName"
-            value={patientFormData.lastName}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Ім'я"
-            name="firstName"
-            value={patientFormData.firstName}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="По-батькові"
-            name="middleName"
-            value={patientFormData.middleName}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
         <Grid width={1}>
           <TextField
             fullWidth
             label="Телефон"
             name="phone"
-            value={patientFormData.phone}
-            onChange={handleChangePatientData}
+            value={searchPatientPhone}
+            onChange={onChangeSearchPatientPhone}
           />
         </Grid>
-        <Grid width={1}>
-          <DatePicker
-            sx={{ width: "100%" }}
-            label="Дата народження"
-            name="birthDate"
-            value={
-              patientFormData.birthDate
-                ? parseISO(patientFormData.birthDate)
-                : null
-            }
-            onChange={(date) => {
-              if (!date) return;
-              const updatedDate = setMilliseconds(
-                setSeconds(setMinutes(setHours(date, 12), 0), 0),
-                0
-              );
-              setPatientFormData((prev) => ({
-                ...prev,
-                birthDate: updatedDate.toISOString(),
-              }));
+        <Grid
+          container
+          justifyContent="center"
+          spacing={2}
+          sx={{ width: "100%" }}
+        >
+          <Button
+            variant="contained"
+            startIcon={<SearchIcon />}
+            sx={{ flex: "1 1 auto", minWidth: "120px" }}
+            onClick={handleSearchPatient}
+          >
+            Пошук
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ flex: "1 1 auto", minWidth: "120px" }}
+            onClick={() => {
+              setPatientFormData({
+                id: "",
+                filialId: "",
+                phone: "",
+                firstName: "",
+                lastName: "",
+                middleName: "",
+                birthDate: "",
+                placeOfResidence: "",
+                sex: "",
+                passportSeries: "",
+                passportNumber: "",
+                idCardNumber: "",
+                placeOfWork: "",
+                position: "",
+                clientType: "",
+                cityOfResidence: "",
+              });
+              setPatientFormState("add");
             }}
-          />
+          >
+            Новий пацієнт
+          </Button>
         </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Місце прописки"
-            name="placeOfResidence"
-            value={patientFormData.placeOfResidence}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Стать</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={patientFormData.sex}
-              label="Стать"
-              onChange={(event) => {
-                const value = event.target.value;
-                setPatientFormData((prev) => ({
-                  ...prev,
-                  sex: value,
-                }));
-              }}
+        {foundedPatient && (
+          <>
+            <Grid width={1}>
+              <Typography variant="h6">Знайдений пацієнт:</Typography>
+              <Typography variant="body1">
+                <strong>Прізвище:</strong> {foundedPatient.lastName}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Ім'я:</strong> {foundedPatient.firstName}
+              </Typography>
+              <Typography variant="body1">
+                <strong>По-батькові:</strong> {foundedPatient.middleName}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Телефон:</strong> {foundedPatient.phoneCountryCode}
+                {foundedPatient.phoneNumber}
+              </Typography>
+            </Grid>
+            <Grid
+              container
+              justifyContent="center"
+              spacing={2}
+              sx={{ width: "100%" }}
             >
-              <MenuItem key={1} value="male">
-                Чоловік
-              </MenuItem>
-              <MenuItem key={2} value="female">
-                Жінка
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Серія паспорту"
-            name="passportSeries"
-            value={patientFormData.passportSeries}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Номер паспорту"
-            name="passportNumber"
-            value={patientFormData.passportNumber}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Id картка"
-            name="idCardNumber"
-            value={patientFormData.idCardNumber}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Місце роботи"
-            name="placeOfWork"
-            value={patientFormData.placeOfWork}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Посада"
-            name="position"
-            value={patientFormData.position}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Тип клієнта</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={patientFormData.clientType}
-              label="Тип клієнта"
-              onChange={(event) => {
-                const value = event.target.value;
-                setPatientFormData((prev) => ({
-                  ...prev,
-                  clientType: value,
-                }));
-              }}
-            >
-              <MenuItem key={1} value="civil">
-                Цивільний
-              </MenuItem>
-              <MenuItem key={2} value="military">
-                Військовий
-              </MenuItem>
-              <MenuItem key={3} value="vpo">
-                ВПО
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid width={1}>
-          <TextField
-            fullWidth
-            label="Місце проживання"
-            name="cityOfResidence"
-            value={patientFormData.cityOfResidence}
-            onChange={handleChangePatientData}
-          />
-        </Grid>
-        <Grid width={1}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Філія</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={patientFormData.filialId}
-              label="Філія"
-              onChange={(event) => {
-                const value = event.target.value;
-                setPatientFormData((prev) => ({
-                  ...prev,
-                  filialId: value,
-                }));
-              }}
-            >
-              {filials.map((filial) => (
-                <MenuItem key={filial.id} value={filial.id}>
-                  {filial.city}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
+              <Button
+                variant="contained"
+                startIcon={<FileDownloadDoneIcon />}
+                sx={{ flex: "1 1 auto", minWidth: "120px" }}
+                onClick={() => {
+                  setAppointmentFormData((prev) => ({
+                    ...prev,
+                    patientId: foundedPatient.id,
+                  }));
+                  setCurrentPatientId(foundedPatient.id);
+                  setCurrentPatient(foundedPatient);
+                  setFoundedPatient(undefined);
+                  setSearchPatientPhone("");
+                  setPatientFormState("show");
+                }}
+              >
+                Обрати
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<BackspaceIcon />}
+                sx={{ flex: "1 1 auto", minWidth: "120px" }}
+                onClick={() => {
+                  setSearchPatientPhone("");
+                  setFoundedPatient(undefined);
+                }}
+              >
+                Скинути
+              </Button>
+            </Grid>
+          </>
+        )}
       </Grid>
     );
   }
@@ -1116,7 +1363,6 @@ const AddAppointment = () => {
                           ...prev,
                           filialId: value,
                         }));
-                        console.log(value);
                       }}
                     >
                       {filials.map((filial) => (

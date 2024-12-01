@@ -23,6 +23,7 @@ import LocalHospital from "@mui/icons-material/LocalHospital";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import AirlineSeatReclineExtraIcon from "@mui/icons-material/AirlineSeatReclineExtra";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useTheme } from "@mui/material/styles";
 import { APP_ROUTES } from "../constants";
 import useLogout from "../hooks/useLogout";
@@ -157,6 +158,16 @@ const Header = () => {
                         <AirlineSeatReclineExtraIcon />
                       </ListItemIcon>
                       <ListItemText primary={"Прийоми"} />
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+                <Link to={APP_ROUTES.ADD_APPOINTMENT}>
+                  <ListItem key={"add-application"} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <AddCircleIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={"Додати прийом"} />
                     </ListItemButton>
                   </ListItem>
                 </Link>
