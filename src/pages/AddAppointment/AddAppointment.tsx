@@ -329,7 +329,7 @@ const AddAppointment = () => {
     startLoading();
     const body = {
       doctorId: appointmentFormData.doctorId,
-      filialId: appointmentFormData.filialId,
+      filialId: Number(appointmentFormData.filialId),
       applicationId: appointmentFormData.applicationId,
       patientId: appointmentFormData.patientId,
       serviceType: appointmentFormData.serviceType,
@@ -341,7 +341,11 @@ const AddAppointment = () => {
       consentForTreatment: appointmentFormData.consentForTreatment,
       consentForDataProcessing: appointmentFormData.consentForDataProcessing,
     };
-    const { error } = await fetchPrivate("appointments", {
+    let url = "appointments";
+    if (applicationId) {
+      url = "appointments/via-application";
+    }
+    const { error } = await fetchPrivate(url, {
       method: "POST",
       body: JSON.stringify(body),
     });
@@ -426,8 +430,8 @@ const AddAppointment = () => {
       try {
         startLoading();
         const year = selectedDate.getFullYear();
-        const month = selectedDate.getMonth() + 1;
-        const day = selectedDate.getDate();
+        const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
+        const day = selectedDate.getDate().toString().padStart(2, "0");
         const currentFilialId = appointmentFormData.filialId;
         const params = new URLSearchParams({
           filialId: currentFilialId.toString(),
