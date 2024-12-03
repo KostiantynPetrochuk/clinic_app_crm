@@ -1295,7 +1295,11 @@ const AddAppointment = () => {
                   let disabled = false;
                   const startString = appointmentFormData.startDateTime;
                   const endString = appointmentFormData.endDateTime;
-                  if (bookingTime?.includes(time)) {
+                  const now = new Date();
+                  if (slotDate.getTime() < now.getTime()) {
+                    buttonVariant = "outlined";
+                    disabled = true;
+                  } else if (bookingTime?.includes(time)) {
                     buttonVariant = "outlined";
                     disabled = true;
                   } else if (startString && !endString) {
@@ -1520,8 +1524,6 @@ const AddAppointment = () => {
                     label="Вартість"
                     name="price"
                     value={"500"}
-                    // value={patientFormData.firstName}
-                    // onChange={handleChangePatientData}
                   />
                 </Grid>
               </Grid>
