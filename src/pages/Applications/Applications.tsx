@@ -36,7 +36,7 @@ const Applications = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("new");
   const [selectedFilial, setSelectedFilial] = useState<number>(1);
   const [canceledByUser, setCanceledByUser] = useState<number | string>("");
-  const [getAll, setGetAll] = useState<boolean>(false);
+  const [getAll, setGetAll] = useState<boolean>(true);
 
   const handleChangeDate = (date: Date) => setSelectedDate(date);
 
