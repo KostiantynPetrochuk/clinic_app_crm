@@ -17,6 +17,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { selectFilials } from "../../store/features/filials/filialsSlice";
+import Switch from "@mui/material/Switch";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -35,6 +36,7 @@ const Applications = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("new");
   const [selectedFilial, setSelectedFilial] = useState<number>(1);
   const [canceledByUser, setCanceledByUser] = useState<number | string>("");
+  const [getAll, setGetAll] = useState<boolean>(false);
 
   const handleChangeDate = (date: Date) => setSelectedDate(date);
 
@@ -47,6 +49,7 @@ const Applications = () => {
         status: selectedStatus,
         filialId: selectedFilial.toString(),
         canceledByUser: canceledByUser.toString() || "0",
+        getAll: getAll.toString(),
       });
       const url = `applications?${params.toString()}`;
       try {
@@ -71,7 +74,7 @@ const Applications = () => {
       }
     };
     fetchData();
-  }, [selectedDate, selectedStatus, selectedFilial, canceledByUser]);
+  }, [selectedDate, selectedStatus, selectedFilial, canceledByUser, getAll]);
 
   return (
     <Container component="main">
@@ -99,10 +102,22 @@ const Applications = () => {
             elevation={24}
           >
             <DateCalendar
+              disabled={getAll}
               value={selectedDate}
               showDaysOutsideCurrentMonth
               fixedWeekNumber={6}
               onChange={handleChangeDate}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={getAll}
+                  onChange={(event: any) => setGetAll(event.target.checked)}
+                  name="getAll"
+                  color="primary"
+                />
+              }
+              label="Переглянути всі"
             />
           </Paper>
           <Paper
