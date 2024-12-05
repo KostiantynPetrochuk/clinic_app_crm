@@ -198,13 +198,17 @@ const Applications = () => {
                   onChange={() => {
                     setCanceledByUser("");
                     setSelectedStatus("approved");
+                    setGetAll(false);
                   }}
                 />
                 <FormControlLabel
                   value="canceled"
                   control={<Radio checked={selectedStatus === "canceled"} />}
                   label="Скасований"
-                  onChange={() => setSelectedStatus("canceled")}
+                  onChange={() => {
+                    setGetAll(false);
+                    setSelectedStatus("canceled");
+                  }}
                 />
               </RadioGroup>
             </FormControl>
