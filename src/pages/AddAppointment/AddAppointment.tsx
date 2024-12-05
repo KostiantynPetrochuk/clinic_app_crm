@@ -45,6 +45,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 import { setPageData } from "../../store/features/pageData/pageDataSlice";
 import { APP_ROUTES, WORKING_TIME } from "../../constants";
+import Message from "../../components/Message";
 
 type ButtonVariant = "contained" | "outlined" | "text";
 
@@ -149,6 +150,13 @@ const AddAppointment = () => {
       (p) => p.phoneNumber === searchPatientPhone
     );
     setFoundedPatient(foundPatient);
+    if (!foundPatient) {
+      showMessage({
+        title: "Увага!",
+        text: "Пацієнта не знайдено.",
+        severity: "warning",
+      });
+    }
   };
 
   const handleChangePatientData = (event: any) => {
@@ -1230,6 +1238,7 @@ const AddAppointment = () => {
 
   return (
     <Container component="main">
+      <Message />
       <Box>
         <Box component="div" sx={{ display: "flex", flexDirection: "column" }}>
           <Paper
@@ -1276,6 +1285,7 @@ const AddAppointment = () => {
               elevation={24}
             >
               <DateCalendar
+                disablePast
                 value={selectedDate}
                 showDaysOutsideCurrentMonth
                 fixedWeekNumber={6}
