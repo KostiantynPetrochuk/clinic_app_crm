@@ -47,9 +47,8 @@ const PatientDetails = () => {
   const [formData, setFormData] = useState({
     id: currentPatient?.id || "",
     filialId: currentPatient?.filialId || "",
-    phone: `${currentPatient?.phoneCountryCode ?? ""}${
-      currentPatient?.phoneNumber ?? ""
-    }`,
+    phoneCountryCode: currentPatient?.phoneCountryCode || "",
+    phone: currentPatient?.phoneNumber || "",
     firstName: currentPatient?.firstName || "",
     lastName: currentPatient?.lastName || "",
     middleName: currentPatient?.middleName || "",
@@ -79,8 +78,8 @@ const PatientDetails = () => {
       const body = {
         id: formData.id,
         filialId: formData.filialId,
-        phoneCountryCode: formData.phone.slice(0, 4),
-        phoneNumber: formData.phone.slice(4),
+        phoneCountryCode: formData.phoneCountryCode,
+        phoneNumber: formData.phone,
         firstName: formData.firstName,
         lastName: formData.lastName,
         middleName: formData.middleName,
@@ -133,7 +132,8 @@ const PatientDetails = () => {
         setFormData({
           id: data.id,
           filialId: data.filialId,
-          phone: `${data.phoneCountryCode}${data.phoneNumber}`,
+          phoneCountryCode: data.phoneCountryCode,
+          phone: data.phoneNumber,
           firstName: data.firstName,
           lastName: data.lastName,
           middleName: data.middleName,
@@ -257,6 +257,27 @@ const PatientDetails = () => {
                           value={formData.middleName}
                           onChange={handleChange}
                         />
+                      </Grid>
+                      <Grid width={1}>
+                        <FormControl fullWidth>
+                          <InputLabel id="phone-country-code-label">
+                            Код країни телефону
+                          </InputLabel>
+                          <Select
+                            labelId="phone-country-code-label"
+                            id="phone-country-code"
+                            name="phoneCountryCode"
+                            value={formData.phoneCountryCode}
+                            label="Код країни телефону"
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="+1">+1 (США)</MenuItem>
+                            <MenuItem value="+44">
+                              +44 (Великобританія)
+                            </MenuItem>
+                            <MenuItem value="+380">+380 (Україна)</MenuItem>
+                          </Select>
+                        </FormControl>
                       </Grid>
                       <Grid width={1}>
                         <TextField

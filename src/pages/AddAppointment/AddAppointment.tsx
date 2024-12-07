@@ -83,6 +83,7 @@ const AddAppointment = () => {
   const patientFilial = filials.find((f) => f.id === currentPatient?.filialId);
   const [bookingTime, setBookingTime] = useState<string[]>([]);
   const [foundedPatient, setFoundedPatient] = useState<Patient>();
+  const [searchPatientPhoneCode, setSearchPatientPhoneCode] = useState("");
   const [searchPatientPhone, setSearchPatientPhone] = useState("");
   const patientFormStateInitial = currentPatientId ? "show" : "search";
   const [patientFormState, setPatientFormState] = useState<
@@ -106,9 +107,8 @@ const AddAppointment = () => {
   const [patientFormData, setPatientFormData] = useState({
     id: currentPatient?.id || "",
     filialId: currentPatient?.filialId || "",
-    phone: `${currentPatient?.phoneCountryCode ?? ""}${
-      currentPatient?.phoneNumber ?? ""
-    }`,
+    phoneCountryCode: currentPatient?.phoneCountryCode || "",
+    phoneNumber: currentPatient?.phoneNumber || "",
     firstName: currentPatient?.firstName || "",
     lastName: currentPatient?.lastName || "",
     middleName: currentPatient?.middleName || "",
@@ -146,9 +146,12 @@ const AddAppointment = () => {
 
   const handleSearchPatient = (event: any) => {
     event.preventDefault();
-    const foundPatient = patients.find(
-      (p) => p.phoneNumber === searchPatientPhone
-    );
+    const foundPatient = patients.find((p) => {
+      return (
+        p.phoneNumber === searchPatientPhone &&
+        p.phoneCountryCode === searchPatientPhoneCode
+      );
+    });
     setFoundedPatient(foundPatient);
     if (!foundPatient) {
       showMessage({
@@ -253,8 +256,8 @@ const AddAppointment = () => {
       startLoading();
       const body = {
         filialId: patientFormData.filialId,
-        phoneCountryCode: patientFormData.phone.slice(0, 4),
-        phoneNumber: patientFormData.phone.slice(4),
+        phoneCountryCode: patientFormData.phoneCountryCode,
+        phoneNumber: patientFormData.phoneNumber,
         firstName: patientFormData.firstName,
         lastName: patientFormData.lastName,
         middleName: patientFormData.middleName,
@@ -297,8 +300,8 @@ const AddAppointment = () => {
       const body = {
         id: patientFormData.id,
         filialId: patientFormData.filialId,
-        phoneCountryCode: patientFormData.phone.slice(0, 4),
-        phoneNumber: patientFormData.phone.slice(4),
+        phoneCountryCode: patientFormData.phoneCountryCode,
+        phoneNumber: patientFormData.phoneNumber,
         firstName: patientFormData.firstName,
         lastName: patientFormData.lastName,
         middleName: patientFormData.middleName,
@@ -409,9 +412,8 @@ const AddAppointment = () => {
       setPatientFormData({
         id: currentPatient?.id || "",
         filialId: currentPatient?.filialId || "",
-        phone: `${currentPatient?.phoneCountryCode ?? ""}${
-          currentPatient?.phoneNumber ?? ""
-        }`,
+        phoneCountryCode: currentPatient?.phoneCountryCode || "",
+        phoneNumber: currentPatient?.phoneNumber || "",
         firstName: currentPatient?.firstName || "",
         lastName: currentPatient?.lastName || "",
         middleName: currentPatient?.middleName || "",
@@ -664,15 +666,6 @@ const AddAppointment = () => {
             />
           </Grid>
           <Grid width={1}>
-            <TextField
-              fullWidth
-              label="Телефон"
-              name="phone"
-              value={patientFormData.phone}
-              onChange={handleChangePatientData}
-            />
-          </Grid>
-          <Grid width={1}>
             <DatePicker
               sx={{ width: "100%" }}
               label="Дата народження"
@@ -693,6 +686,34 @@ const AddAppointment = () => {
                   birthDate: updatedDate.toISOString(),
                 }));
               }}
+            />
+          </Grid>
+          <Grid width={1}>
+            <FormControl fullWidth>
+              <InputLabel id="phone-country-code-label">
+                Код країни телефону
+              </InputLabel>
+              <Select
+                labelId="phone-country-code-label"
+                id="phone-country-code"
+                name="phoneCountryCode"
+                value={patientFormData.phoneCountryCode}
+                label="Код країни телефону"
+                onChange={handleChangePatientData}
+              >
+                <MenuItem value="+1">+1 (США)</MenuItem>
+                <MenuItem value="+44">+44 (Великобританія)</MenuItem>
+                <MenuItem value="+380">+380 (Україна)</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Телефон"
+              name="phoneNumber"
+              value={patientFormData.phoneNumber}
+              onChange={handleChangePatientData}
             />
           </Grid>
           <Grid width={1}>
@@ -909,15 +930,6 @@ const AddAppointment = () => {
             />
           </Grid>
           <Grid width={1}>
-            <TextField
-              fullWidth
-              label="Телефон"
-              name="phone"
-              value={patientFormData.phone}
-              onChange={handleChangePatientData}
-            />
-          </Grid>
-          <Grid width={1}>
             <DatePicker
               sx={{ width: "100%" }}
               label="Дата народження"
@@ -938,6 +950,34 @@ const AddAppointment = () => {
                   birthDate: updatedDate.toISOString(),
                 }));
               }}
+            />
+          </Grid>
+          <Grid width={1}>
+            <FormControl fullWidth>
+              <InputLabel id="phone-country-code-label">
+                Код країни телефону
+              </InputLabel>
+              <Select
+                labelId="phone-country-code-label"
+                id="phone-country-code"
+                name="phoneCountryCode"
+                value={patientFormData.phoneCountryCode}
+                label="Код країни телефону"
+                onChange={handleChangePatientData}
+              >
+                <MenuItem value="+1">+1 (США)</MenuItem>
+                <MenuItem value="+44">+44 (Великобританія)</MenuItem>
+                <MenuItem value="+380">+380 (Україна)</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid width={1}>
+            <TextField
+              fullWidth
+              label="Телефон"
+              name="phoneNumber"
+              value={patientFormData.phoneNumber}
+              onChange={handleChangePatientData}
             />
           </Grid>
           <Grid width={1}>
@@ -1125,17 +1165,39 @@ const AddAppointment = () => {
         sx={{ mt: 2, alignItems: "center" }}
       >
         <Grid width={1}>
+          <FormControl fullWidth>
+            <InputLabel id="phone-country-code-label">
+              Код країни телефону
+            </InputLabel>
+            <Select
+              labelId="phone-country-code-label"
+              id="phone-country-code"
+              name="phoneCountryCode"
+              value={searchPatientPhoneCode}
+              label="Код країни телефону"
+              onChange={(event) => {
+                const value = event.target.value;
+                setSearchPatientPhoneCode(value);
+              }}
+            >
+              <MenuItem value="+1">+1 (США)</MenuItem>
+              <MenuItem value="+44">+44 (Великобританія)</MenuItem>
+              <MenuItem value="+380">+380 (Україна)</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid width={1}>
           <TextField
             fullWidth
             label="Телефон"
-            name="phone"
+            name="phoneNumber"
             value={searchPatientPhone}
             onChange={onChangeSearchPatientPhone}
           />
         </Grid>
         <Grid
           container
-          justifyContent="center"
+          justifyContent="space-between"
           spacing={2}
           sx={{ width: "100%" }}
         >
@@ -1147,6 +1209,13 @@ const AddAppointment = () => {
           >
             Пошук
           </Button>
+        </Grid>
+        <Grid
+          container
+          justifyContent="space-between"
+          spacing={2}
+          sx={{ width: "100%" }}
+        >
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -1155,7 +1224,8 @@ const AddAppointment = () => {
               setPatientFormData({
                 id: "",
                 filialId: "",
-                phone: "",
+                phoneCountryCode: "",
+                phoneNumber: "",
                 firstName: "",
                 lastName: "",
                 middleName: "",

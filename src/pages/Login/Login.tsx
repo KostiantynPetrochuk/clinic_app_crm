@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import useMessage from "../../hooks/useMessage";
 import useLoading from "../../hooks/useLoading";
@@ -38,17 +39,18 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const phone = data.get("phone");
+    const phoneCountryCode = data.get("phoneCountryCode");
+    const phoneNumber = data.get("phoneNumber");
     const pwd = data.get("password");
-    if (!phone || !(phone as string).length) {
+    if (!phoneNumber || !(phoneNumber as string).length) {
       setIsPhoneValid(false);
     }
     if (!pwd || !(pwd as string).length) {
       setIsPasswordValid(false);
     }
     if (
-      !phone ||
-      !(phone as string).length ||
+      !phoneNumber ||
+      !(phoneNumber as string).length ||
       !pwd ||
       !(pwd as string).length
     ) {
@@ -62,8 +64,8 @@ const Login = () => {
     try {
       startLoading();
       const body = {
-        phoneCountryCode: "+380",
-        phoneNumber: phone,
+        phoneCountryCode,
+        phoneNumber,
         password: pwd,
       };
       const url = `${API_URL}signin`;
@@ -131,15 +133,31 @@ const Login = () => {
           Вхід
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <FormControl fullWidth>
+            <InputLabel id="phone-country-code-label">
+              Код країни телефону
+            </InputLabel>
+            <Select
+              labelId="phone-country-code-label"
+              id="phone-country-code"
+              name="phoneCountryCode"
+              defaultValue="+380"
+              label="Код країни телефону"
+            >
+              <MenuItem value="+1">+1 (США)</MenuItem>
+              <MenuItem value="+44">+44 (Великобританія)</MenuItem>
+              <MenuItem value="+380">+380 (Україна)</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             error={!isPhoneValid}
             margin="normal"
             required
             fullWidth
-            id="phone"
+            id="phoneNumber"
             label="Телефон"
-            name="phone"
-            autoComplete="phone"
+            name="phoneNumber"
+            autoComplete="phoneNumber"
             autoFocus
             onInput={handleInputPhone}
           />
