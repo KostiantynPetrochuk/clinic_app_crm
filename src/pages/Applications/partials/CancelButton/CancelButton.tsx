@@ -54,7 +54,6 @@ const CancelButton = ({
       });
       if (error) {
         stopLoading();
-        console.error(error);
         return;
       }
       dispatch(updateApplication(data));

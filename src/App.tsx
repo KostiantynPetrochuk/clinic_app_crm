@@ -24,10 +24,12 @@ import {
   AddAppointment,
   Appointments,
 } from "./pages";
+import useUpdateInitData from "./hooks/useUpdateInitData";
 
 import "./App.css";
 
 function App() {
+  useUpdateInitData();
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ukLocale}>
       <Routes>

@@ -26,28 +26,23 @@ const useFetchPrivate = () => {
     options.referrerPolicy = "no-referrer";
     try {
       const response = await fetch(`${API_URL}${url}`, options);
-
       if (response.status === 401) {
         const newAccessToken = await refresh();
+        if (!newAccessToken) {
+          return { data: null, error: { message: "Unauthorized" } };
+        }
         options.headers["Authorization"] = `Bearer ${newAccessToken}`;
         const newResponse = await fetch(`${API_URL}${url}`, options);
         const newResult = await newResponse.json();
         return { data: newResult, error: null };
       }
-
       if (!response.ok) {
         const result = await response.json();
         return { data: null, error: result };
       }
-
       const result = await response.json();
       return { data: result, error: null };
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      } else {
-        console.log(String(error));
-      }
       return { data: null, error };
     }
   };
