@@ -44,7 +44,7 @@ import useLoading from "../../hooks/useLoading";
 import AddIcon from "@mui/icons-material/Add";
 import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 import { setPageData } from "../../store/features/pageData/pageDataSlice";
-import { APP_ROUTES, WORKING_TIME } from "../../constants";
+import { APP_ROUTES, WORKING_TIME, SERVICE_PRICES } from "../../constants";
 import Message from "../../components/Message";
 
 type ButtonVariant = "contained" | "outlined" | "text";
@@ -100,7 +100,7 @@ const AddAppointment = () => {
     sourceOfInfo: "",
     startDateTime: currentApplication?.startDateTime || "",
     endDateTime: currentApplication?.endDateTime || "",
-    price: 500,
+    price: 0,
     consentForTreatment: false,
     consentForDataProcessing: false,
   });
@@ -1498,15 +1498,23 @@ const AddAppointment = () => {
                       label="Тип клієнта"
                       onChange={(event) => {
                         const value = event.target.value;
+                        const priceItem =
+                          SERVICE_PRICES[value as keyof typeof SERVICE_PRICES];
                         setAppointmentFormData((prev) => ({
                           ...prev,
                           serviceType: value,
+                          price: priceItem.value,
                         }));
                       }}
                     >
-                      <MenuItem key={1} value="consultation">
-                        Консультація
-                      </MenuItem>
+                      {Object.keys(SERVICE_PRICES).map((key) => {
+                        const serviceKey = key as keyof typeof SERVICE_PRICES;
+                        return (
+                          <MenuItem key={serviceKey} value={serviceKey}>
+                            {SERVICE_PRICES[serviceKey].label}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -1603,7 +1611,7 @@ const AddAppointment = () => {
                     fullWidth
                     label="Вартість"
                     name="price"
-                    value={"500"}
+                    value={appointmentFormData.price}
                   />
                 </Grid>
               </Grid>

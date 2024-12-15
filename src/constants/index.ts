@@ -24,6 +24,13 @@ export const SERVICE_TYPES = {
   consultation: "Консультація",
 };
 
+export const SERVICE_PRICES = {
+  consultation: {
+    value: 500,
+    label: "Консультація",
+  },
+};
+
 export const RECORD_TYPES = {
   website: "Заявка на сайті",
   reception: "Рецепсія",
