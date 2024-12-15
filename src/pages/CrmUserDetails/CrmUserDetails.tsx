@@ -42,9 +42,19 @@ const CrmUserDetails = () => {
     roles: currentUser?.roles || [],
     access: currentUser?.access || false,
   });
+  const [validation, setValidation] = useState({
+    firstName: true,
+    lastName: true,
+    middleName: true,
+    phoneCountryCode: true,
+    phoneNumber: true,
+    roles: true,
+    access: true,
+  });
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
+    setValidation({ ...validation, [name]: true });
     setFormData({ ...formData, [name]: value });
   };
 
@@ -72,7 +82,79 @@ const CrmUserDetails = () => {
       dispatch(updateCrmUser(data?.user));
       setEditMode(false);
       stopLoading();
+      showMessage({
+        title: "Успіх!",
+        text: "Дані користувача успішно збережені.",
+        severity: "success",
+      });
     };
+    if (!formData.firstName) {
+      setValidation({ ...validation, firstName: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано ім'я користувача.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.lastName) {
+      setValidation({ ...validation, lastName: false });
+      return;
+    }
+    if (!formData.middleName) {
+      setValidation({ ...validation, middleName: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано по батькові користувача.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.phoneCountryCode) {
+      setValidation({ ...validation, phoneCountryCode: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано код країни телефону.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.phoneNumber) {
+      setValidation({ ...validation, phoneNumber: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано номер телефону.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.roles) {
+      setValidation({ ...validation, roles: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано посаду користувача.",
+        severity: "error",
+      });
+      return;
+    }
+    if (formData.roles.length === 0) {
+      setValidation({ ...validation, roles: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано посаду користувача.",
+        severity: "error",
+      });
+      return;
+    }
+    if (formData.access === undefined) {
+      setValidation({ ...validation, access: false });
+      showMessage({
+        title: "Помилка!",
+        text: "Не вказано доступ користувача.",
+        severity: "error",
+      });
+      return;
+    }
     updateUser();
   };
 
@@ -193,6 +275,7 @@ const CrmUserDetails = () => {
                           name="lastName"
                           value={formData.lastName}
                           onChange={handleChange}
+                          error={!validation.lastName}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -202,6 +285,7 @@ const CrmUserDetails = () => {
                           name="firstName"
                           value={formData.firstName}
                           onChange={handleChange}
+                          error={!validation.firstName}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -211,6 +295,7 @@ const CrmUserDetails = () => {
                           name="middleName"
                           value={formData.middleName}
                           onChange={handleChange}
+                          error={!validation.middleName}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -220,6 +305,7 @@ const CrmUserDetails = () => {
                           name="phoneCountryCode"
                           value={formData.phoneCountryCode}
                           onChange={handleChange}
+                          error={!validation.phoneCountryCode}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -229,6 +315,7 @@ const CrmUserDetails = () => {
                           name="phoneNumber"
                           value={formData.phoneNumber}
                           onChange={handleChange}
+                          error={!validation.phoneNumber}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -237,6 +324,7 @@ const CrmUserDetails = () => {
                           label="Посада"
                           name="roles"
                           value={formData.roles.join(",")}
+                          error={!validation.roles}
                           onChange={(event) => {
                             const value = event.target.value;
                             const newValue = value.split(",");

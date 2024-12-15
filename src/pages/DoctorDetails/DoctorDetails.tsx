@@ -41,9 +41,17 @@ const DoctorDetails = () => {
     lastName: currentDoctor?.lastName || "",
     middleName: currentDoctor?.middleName || "",
   });
+  const [validation, setValidation] = useState({
+    id: false,
+    filialId: false,
+    firstName: false,
+    lastName: false,
+    middleName: false,
+  });
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
+    setValidation({ ...validation, [name]: "" });
     setFormData({ ...formData, [name]: value });
   };
 
@@ -71,7 +79,48 @@ const DoctorDetails = () => {
       setCurrentDoctor(data);
       setEditMode(false);
       stopLoading();
+      showMessage({
+        title: "Успіх!",
+        text: "Профіль лікаря успішно відредаговано.",
+        severity: "success",
+      });
     };
+    if (!formData.firstName) {
+      setValidation((prev) => ({ ...prev, firstName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Прізвище не може бути пустим.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.lastName) {
+      setValidation((prev) => ({ ...prev, lastName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Ім'я не може бути пустим.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.middleName) {
+      setValidation((prev) => ({ ...prev, middleName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "По-батькові не може бути пустим.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.filialId) {
+      setValidation((prev) => ({ ...prev, filialId: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Потрібно обрати філію.",
+        severity: "error",
+      });
+      return;
+    }
     updateCurrentDoctor();
   };
 
@@ -186,6 +235,7 @@ const DoctorDetails = () => {
                           name="firstName"
                           value={formData.firstName}
                           onChange={handleChange}
+                          error={validation.firstName}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -195,6 +245,7 @@ const DoctorDetails = () => {
                           name="lastName"
                           value={formData.lastName}
                           onChange={handleChange}
+                          error={validation.lastName}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -204,6 +255,7 @@ const DoctorDetails = () => {
                           name="middleName"
                           value={formData.middleName}
                           onChange={handleChange}
+                          error={validation.middleName}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -223,6 +275,7 @@ const DoctorDetails = () => {
                                 filialId: value,
                               }));
                             }}
+                            error={validation.filialId}
                           >
                             {filials.map((filial) => (
                               <MenuItem key={filial.id} value={filial.id}>

@@ -34,9 +34,16 @@ const FilialDetails = () => {
     address: currentFilial?.address || "",
     phone: currentFilial?.phone || "",
   });
+  const [validation, setValidation] = useState({
+    region: false,
+    city: false,
+    address: false,
+    phone: false,
+  });
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
+    setValidation({ ...validation, [name]: false });
     setFormData({ ...formData, [name]: value });
   };
 
@@ -64,7 +71,48 @@ const FilialDetails = () => {
       setCurrentFilial(data);
       setEditMode(false);
       stopLoading();
+      showMessage({
+        title: "Успіх!",
+        text: "Філію успішно відредаговано.",
+        severity: "success",
+      });
     };
+    if (!formData.region) {
+      setValidation({ ...validation, region: true });
+      showMessage({
+        title: "Помилка!",
+        text: "Область не може бути пустою.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.city) {
+      setValidation({ ...validation, city: true });
+      showMessage({
+        title: "Помилка!",
+        text: "Місто не може бути пустим.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.address) {
+      setValidation({ ...validation, address: true });
+      showMessage({
+        title: "Помилка!",
+        text: "Адреса не може бути пустою.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.phone) {
+      setValidation({ ...validation, phone: true });
+      showMessage({
+        title: "Помилка!",
+        text: "Номер телефону не може бути пустим.",
+        severity: "error",
+      });
+      return;
+    }
     updateCurrentFilial();
   };
 
@@ -177,6 +225,7 @@ const FilialDetails = () => {
                           name="region"
                           value={formData.region}
                           onChange={handleChange}
+                          error={validation.region}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -186,6 +235,7 @@ const FilialDetails = () => {
                           name="city"
                           value={formData.city}
                           onChange={handleChange}
+                          error={validation.city}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -195,6 +245,7 @@ const FilialDetails = () => {
                           name="address"
                           value={formData.address}
                           onChange={handleChange}
+                          error={validation.address}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -204,6 +255,7 @@ const FilialDetails = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
+                          error={validation.phone}
                         />
                       </Grid>
                     </Grid>
