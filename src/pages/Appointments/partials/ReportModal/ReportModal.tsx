@@ -17,10 +17,14 @@ import TextField from "@mui/material/TextField";
 import useFetchPrivate from "../../../../hooks/useFetchPrivate";
 import { updateAppointment } from "../../../../store/features/appointments/appointmentsSlice";
 import { useAppDispatch } from "../../../../hooks";
+import useMessage from "../../../../hooks/useMessage";
+import useLoading from "../../../../hooks/useLoading";
 
 const ReportModal = ({ appointment }: { appointment: Appointment }) => {
   const dispatch = useAppDispatch();
+  const showMessage = useMessage();
   const fetchPrivate = useFetchPrivate();
+  const { startLoading, stopLoading } = useLoading();
   const [openReport, setOpenReport] = useState(false);
   const [formData, setFormData] = useState({
     appointmentId: appointment.id,
@@ -34,6 +38,7 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
   const handleClickReport = () => setOpenReport((prev) => !prev);
 
   const handleSubmit = async () => {
+    startLoading();
     type ReportFormData = {
       appointmentId: number;
       status: string;
@@ -60,9 +65,13 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
       method: "PATCH",
       body: JSON.stringify(body),
     });
-    console.log({ data, error });
     if (error) {
-      console.log(error);
+      showMessage({
+        title: "Помилка!",
+        text: "Не вдалось відправити звіт.",
+        severity: "error",
+      });
+      stopLoading();
       return;
     }
     const updatedAppointment = {
@@ -72,6 +81,12 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
       patientMiddleName: appointment.patientMiddleName,
     };
     dispatch(updateAppointment(updatedAppointment));
+    showMessage({
+      title: "Успіх!",
+      text: "Звіт відправлено.",
+      severity: "success",
+    });
+    stopLoading();
   };
   return (
     <ListItem

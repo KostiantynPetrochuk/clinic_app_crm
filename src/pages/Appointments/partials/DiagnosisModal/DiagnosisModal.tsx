@@ -12,11 +12,15 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import useFetchPrivate from "../../../../hooks/useFetchPrivate";
 import { updateAppointment } from "../../../../store/features/appointments/appointmentsSlice";
 import { useAppDispatch } from "../../../../hooks";
+import useMessage from "../../../../hooks/useMessage";
+import useLoading from "../../../../hooks/useLoading";
 import useAuth from "../../../../hooks/useAuth";
 
 const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
   const dispatch = useAppDispatch();
   const fetchPrivate = useFetchPrivate();
+  const showMessage = useMessage();
+  const { startLoading, stopLoading } = useLoading();
   const { auth } = useAuth();
   const [openReport, setOpenReport] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,6 +34,7 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
   const handleClickReport = () => setOpenReport((prev) => !prev);
 
   const handleSubmit = async () => {
+    startLoading();
     type ReportFormData = {
       appointmentId: number;
       diagnosisAdderId: number;
@@ -50,7 +55,12 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
       body: JSON.stringify(body),
     });
     if (error) {
-      console.log(error);
+      showMessage({
+        title: "Помилка!",
+        text: "Не вдалось додати діагноз.",
+        severity: "error",
+      });
+      stopLoading();
       return;
     }
     const updatedAppointment = {
@@ -61,6 +71,12 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
     };
     dispatch(updateAppointment(updatedAppointment));
     setOpenReport(false);
+    showMessage({
+      title: "Успіх!",
+      text: "Діагноз додано.",
+      severity: "success",
+    });
+    stopLoading();
   };
   return (
     <ListItem
