@@ -34,6 +34,9 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
     consentForDataProcessing: appointment.consentForDataProcessing || false,
     cancelReason: appointment.cancelReason.String || "",
   });
+  const [formDataValidation, setFormDataValidation] = useState({
+    cancelReason: false,
+  });
 
   const handleClickReport = () => setOpenReport((prev) => !prev);
 
@@ -60,7 +63,19 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
     if (formData.status === "canceled") {
       body["cancelReason"] = formData.cancelReason;
     }
-
+    if (formData.status === "canceled" && formData.cancelReason === "") {
+      setFormDataValidation({
+        ...formDataValidation,
+        cancelReason: true,
+      });
+      showMessage({
+        title: "Помилка!",
+        text: "Вкажіть причину скасування.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
     const { data, error } = await fetchPrivate("appointments/report", {
       method: "PATCH",
       body: JSON.stringify(body),
@@ -219,12 +234,17 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
               label="Причина скасування"
               variant="outlined"
               value={formData.cancelReason}
-              onChange={(e) =>
+              onChange={(e) => {
+                setFormDataValidation({
+                  ...formDataValidation,
+                  cancelReason: false,
+                });
                 setFormData({
                   ...formData,
                   cancelReason: (e.target as HTMLInputElement).value,
-                })
-              }
+                });
+              }}
+              error={formDataValidation.cancelReason}
             />
           )}
         </DialogContent>

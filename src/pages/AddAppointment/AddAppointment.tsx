@@ -123,6 +123,35 @@ const AddAppointment = () => {
     clientType: currentPatient?.clientType || "",
     cityOfResidence: currentPatient?.cityOfResidence || "",
   });
+  const [validation, setValidation] = useState({
+    patientId: false,
+    startDateTime: false,
+    endDateTime: false,
+    filialId: false,
+    doctorId: false,
+    serviceType: false,
+    recordType: false,
+    sourceOfInfo: false,
+  });
+  const [patientValidation, setPatientValidation] = useState({
+    filialId: false,
+    phoneCountryCode: false,
+    phoneNumber: false,
+    firstName: false,
+    lastName: false,
+    middleName: false,
+    birthDate: false,
+    placeOfResidence: false,
+    sex: false,
+    passportSeries: false,
+    passportNumber: false,
+    idCardNumber: false,
+    placeOfWork: false,
+    position: false,
+    clientType: false,
+    cityOfResidence: false,
+  });
+
   const [selectedDate, setSelectedDate] = useState<Date>(
     currentApplication?.startDateTime
       ? parseISO(currentApplication?.startDateTime)
@@ -164,6 +193,7 @@ const AddAppointment = () => {
 
   const handleChangePatientData = (event: any) => {
     const { name, value } = event.target;
+    setPatientValidation((prev) => ({ ...prev, [name]: false }));
     setPatientFormData({ ...patientFormData, [name]: value });
   };
 
@@ -291,6 +321,151 @@ const AddAppointment = () => {
       setPatientFormState("show");
       stopLoading();
     };
+    if (!patientFormData.lastName) {
+      setPatientValidation((prev) => ({ ...prev, lastName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть прізвище.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.firstName) {
+      setPatientValidation((prev) => ({ ...prev, firstName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть ім'я.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.middleName) {
+      setPatientValidation((prev) => ({ ...prev, middleName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть по-батькові.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.birthDate) {
+      setPatientValidation((prev) => ({ ...prev, birthDate: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть дату народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.phoneCountryCode) {
+      setPatientValidation((prev) => ({ ...prev, phoneCountryCode: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть код країни телефону.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.phoneNumber) {
+      setPatientValidation((prev) => ({ ...prev, phoneNumber: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть номер телефону.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.placeOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, placeOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місце прописки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.sex) {
+      setPatientValidation((prev) => ({ ...prev, sex: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть стать.",
+        severity: "error",
+      });
+      return;
+    }
+    if (
+      !patientFormData.passportSeries &&
+      !patientFormData.passportNumber &&
+      !patientFormData.idCardNumber
+    ) {
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть серію та номер паспорту, або номер id картки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.idCardNumber && !patientFormData.passportSeries) {
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть серію паспорту або номер id картки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.idCardNumber && !patientFormData.passportNumber) {
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть номер паспорту або номер id картки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.placeOfWork) {
+      setPatientValidation((prev) => ({ ...prev, placeOfWork: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місце роботи.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.position) {
+      setPatientValidation((prev) => ({ ...prev, position: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть посаду.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.clientType) {
+      setPatientValidation((prev) => ({ ...prev, clientType: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть тип клієнта.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.cityOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, cityOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місце проживання.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.filialId) {
+      setPatientValidation((prev) => ({ ...prev, filialId: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть філію.",
+        severity: "error",
+      });
+      return;
+    }
     createNewPatient();
   };
 
@@ -333,6 +508,151 @@ const AddAppointment = () => {
       stopLoading();
       setPatientFormState("show");
     };
+    if (!patientFormData.lastName) {
+      setPatientValidation((prev) => ({ ...prev, lastName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть прізвище.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.firstName) {
+      setPatientValidation((prev) => ({ ...prev, firstName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть ім'я.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.middleName) {
+      setPatientValidation((prev) => ({ ...prev, middleName: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть по-батькові.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.birthDate) {
+      setPatientValidation((prev) => ({ ...prev, birthDate: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть дату народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.phoneCountryCode) {
+      setPatientValidation((prev) => ({ ...prev, phoneCountryCode: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть код країни телефону.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.phoneNumber) {
+      setPatientValidation((prev) => ({ ...prev, phoneNumber: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть номер телефону.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.placeOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, placeOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місце прописки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.sex) {
+      setPatientValidation((prev) => ({ ...prev, sex: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть стать.",
+        severity: "error",
+      });
+      return;
+    }
+    if (
+      !patientFormData.passportSeries &&
+      !patientFormData.passportNumber &&
+      !patientFormData.idCardNumber
+    ) {
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть серію та номер паспорту, або номер id картки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.idCardNumber && !patientFormData.passportSeries) {
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть серію паспорту або номер id картки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.idCardNumber && !patientFormData.passportNumber) {
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть номер паспорту або номер id картки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.placeOfWork) {
+      setPatientValidation((prev) => ({ ...prev, placeOfWork: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місце роботи.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.position) {
+      setPatientValidation((prev) => ({ ...prev, position: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть посаду.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.clientType) {
+      setPatientValidation((prev) => ({ ...prev, clientType: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть тип клієнта.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.cityOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, cityOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місце проживання.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.filialId) {
+      setPatientValidation((prev) => ({ ...prev, filialId: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть філію.",
+        severity: "error",
+      });
+      return;
+    }
     updateCurrentPatient();
   };
 
@@ -352,6 +672,86 @@ const AddAppointment = () => {
       consentForTreatment: appointmentFormData.consentForTreatment,
       consentForDataProcessing: appointmentFormData.consentForDataProcessing,
     };
+    if (!appointmentFormData.patientId) {
+      setValidation((prev) => ({ ...prev, patientId: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть пацієнта, або створіть нового.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.startDateTime) {
+      setValidation((prev) => ({ ...prev, startDateTime: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть час початку запису.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.endDateTime) {
+      setValidation((prev) => ({ ...prev, endDateTime: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, виберіть час завершення запису.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.filialId) {
+      setValidation((prev) => ({ ...prev, filialId: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, оберіть філію.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.doctorId) {
+      setValidation((prev) => ({ ...prev, doctorId: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, оберіть лікаря.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.serviceType) {
+      setValidation((prev) => ({ ...prev, serviceType: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, оберіть тип послуги.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.recordType) {
+      setValidation((prev) => ({ ...prev, recordType: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, оберіть тип запису.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (!appointmentFormData.sourceOfInfo) {
+      setValidation((prev) => ({ ...prev, sourceOfInfo: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, оберіть джерело інформації.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
     let url = "appointments";
     if (applicationId) {
       url = "appointments/via-application";
@@ -645,6 +1045,7 @@ const AddAppointment = () => {
               name="lastName"
               value={patientFormData.lastName}
               onChange={handleChangePatientData}
+              error={patientValidation.lastName}
             />
           </Grid>
           <Grid width={1}>
@@ -654,6 +1055,7 @@ const AddAppointment = () => {
               name="firstName"
               value={patientFormData.firstName}
               onChange={handleChangePatientData}
+              error={patientValidation.firstName}
             />
           </Grid>
           <Grid width={1}>
@@ -663,6 +1065,7 @@ const AddAppointment = () => {
               name="middleName"
               value={patientFormData.middleName}
               onChange={handleChangePatientData}
+              error={patientValidation.middleName}
             />
           </Grid>
           <Grid width={1}>
@@ -676,15 +1079,35 @@ const AddAppointment = () => {
                   : null
               }
               onChange={(date) => {
-                if (!date) return;
+                if (!date || isNaN(date.getTime())) {
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    birthDate: true,
+                  }));
+                  return;
+                }
                 const updatedDate = setMilliseconds(
                   setSeconds(setMinutes(setHours(date, 12), 0), 0),
                   0
                 );
-                setPatientFormData((prev) => ({
+                setPatientValidation((prev) => ({
                   ...prev,
-                  birthDate: updatedDate.toISOString(),
+                  birthDate: false,
                 }));
+                if (updatedDate && !isNaN(updatedDate.getTime())) {
+                  setPatientFormData((prev) => ({
+                    ...prev,
+                    birthDate: updatedDate.toISOString(),
+                  }));
+                }
+              }}
+              onError={(error) => {
+                if (error) {
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    birthDate: true,
+                  }));
+                }
               }}
             />
           </Grid>
@@ -700,6 +1123,7 @@ const AddAppointment = () => {
                 value={patientFormData.phoneCountryCode}
                 label="Код країни телефону"
                 onChange={handleChangePatientData}
+                error={patientValidation.phoneCountryCode}
               >
                 <MenuItem value="+1">+1 (США)</MenuItem>
                 <MenuItem value="+44">+44 (Великобританія)</MenuItem>
@@ -714,6 +1138,7 @@ const AddAppointment = () => {
               name="phoneNumber"
               value={patientFormData.phoneNumber}
               onChange={handleChangePatientData}
+              error={patientValidation.phoneNumber}
             />
           </Grid>
           <Grid width={1}>
@@ -723,6 +1148,7 @@ const AddAppointment = () => {
               name="placeOfResidence"
               value={patientFormData.placeOfResidence}
               onChange={handleChangePatientData}
+              error={patientValidation.placeOfResidence}
             />
           </Grid>
           <Grid width={1}>
@@ -735,11 +1161,16 @@ const AddAppointment = () => {
                 label="Стать"
                 onChange={(event) => {
                   const value = event.target.value;
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    sex: false,
+                  }));
                   setPatientFormData((prev) => ({
                     ...prev,
                     sex: value,
                   }));
                 }}
+                error={patientValidation.sex}
               >
                 <MenuItem key={1} value="male">
                   Чоловік
@@ -784,6 +1215,7 @@ const AddAppointment = () => {
               name="placeOfWork"
               value={patientFormData.placeOfWork}
               onChange={handleChangePatientData}
+              error={patientValidation.placeOfWork}
             />
           </Grid>
           <Grid width={1}>
@@ -793,6 +1225,7 @@ const AddAppointment = () => {
               name="position"
               value={patientFormData.position}
               onChange={handleChangePatientData}
+              error={patientValidation.position}
             />
           </Grid>
           <Grid width={1}>
@@ -805,11 +1238,16 @@ const AddAppointment = () => {
                 label="Тип клієнта"
                 onChange={(event) => {
                   const value = event.target.value;
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    clientType: false,
+                  }));
                   setPatientFormData((prev) => ({
                     ...prev,
                     clientType: value,
                   }));
                 }}
+                error={patientValidation.clientType}
               >
                 <MenuItem key={1} value="civil">
                   Цивільний
@@ -830,6 +1268,7 @@ const AddAppointment = () => {
               name="cityOfResidence"
               value={patientFormData.cityOfResidence}
               onChange={handleChangePatientData}
+              error={patientValidation.cityOfResidence}
             />
           </Grid>
           <Grid width={1}>
@@ -842,11 +1281,16 @@ const AddAppointment = () => {
                 label="Філія"
                 onChange={(event) => {
                   const value = event.target.value;
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    filialId: false,
+                  }));
                   setPatientFormData((prev) => ({
                     ...prev,
                     filialId: value,
                   }));
                 }}
+                error={patientValidation.filialId}
               >
                 {filials.map((filial) => (
                   <MenuItem key={filial.id} value={filial.id}>
@@ -909,6 +1353,7 @@ const AddAppointment = () => {
               name="lastName"
               value={patientFormData.lastName}
               onChange={handleChangePatientData}
+              error={patientValidation.lastName}
             />
           </Grid>
           <Grid width={1}>
@@ -918,6 +1363,7 @@ const AddAppointment = () => {
               name="firstName"
               value={patientFormData.firstName}
               onChange={handleChangePatientData}
+              error={patientValidation.firstName}
             />
           </Grid>
           <Grid width={1}>
@@ -927,6 +1373,7 @@ const AddAppointment = () => {
               name="middleName"
               value={patientFormData.middleName}
               onChange={handleChangePatientData}
+              error={patientValidation.middleName}
             />
           </Grid>
           <Grid width={1}>
@@ -940,15 +1387,35 @@ const AddAppointment = () => {
                   : null
               }
               onChange={(date) => {
-                if (!date) return;
+                if (!date || isNaN(date.getTime())) {
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    birthDate: true,
+                  }));
+                  return;
+                }
                 const updatedDate = setMilliseconds(
                   setSeconds(setMinutes(setHours(date, 12), 0), 0),
                   0
                 );
-                setPatientFormData((prev) => ({
+                setPatientValidation((prev) => ({
                   ...prev,
-                  birthDate: updatedDate.toISOString(),
+                  birthDate: false,
                 }));
+                if (updatedDate && !isNaN(updatedDate.getTime())) {
+                  setPatientFormData((prev) => ({
+                    ...prev,
+                    birthDate: updatedDate.toISOString(),
+                  }));
+                }
+              }}
+              onError={(error) => {
+                if (error) {
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    birthDate: true,
+                  }));
+                }
               }}
             />
           </Grid>
@@ -964,6 +1431,7 @@ const AddAppointment = () => {
                 value={patientFormData.phoneCountryCode}
                 label="Код країни телефону"
                 onChange={handleChangePatientData}
+                error={patientValidation.phoneCountryCode}
               >
                 <MenuItem value="+1">+1 (США)</MenuItem>
                 <MenuItem value="+44">+44 (Великобританія)</MenuItem>
@@ -978,6 +1446,7 @@ const AddAppointment = () => {
               name="phoneNumber"
               value={patientFormData.phoneNumber}
               onChange={handleChangePatientData}
+              error={patientValidation.phoneNumber}
             />
           </Grid>
           <Grid width={1}>
@@ -987,6 +1456,7 @@ const AddAppointment = () => {
               name="placeOfResidence"
               value={patientFormData.placeOfResidence}
               onChange={handleChangePatientData}
+              error={patientValidation.placeOfResidence}
             />
           </Grid>
           <Grid width={1}>
@@ -999,11 +1469,16 @@ const AddAppointment = () => {
                 label="Стать"
                 onChange={(event) => {
                   const value = event.target.value;
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    sex: false,
+                  }));
                   setPatientFormData((prev) => ({
                     ...prev,
                     sex: value,
                   }));
                 }}
+                error={patientValidation.sex}
               >
                 <MenuItem key={1} value="male">
                   Чоловік
@@ -1048,6 +1523,7 @@ const AddAppointment = () => {
               name="placeOfWork"
               value={patientFormData.placeOfWork}
               onChange={handleChangePatientData}
+              error={patientValidation.placeOfWork}
             />
           </Grid>
           <Grid width={1}>
@@ -1057,6 +1533,7 @@ const AddAppointment = () => {
               name="position"
               value={patientFormData.position}
               onChange={handleChangePatientData}
+              error={patientValidation.position}
             />
           </Grid>
           <Grid width={1}>
@@ -1069,11 +1546,16 @@ const AddAppointment = () => {
                 label="Тип клієнта"
                 onChange={(event) => {
                   const value = event.target.value;
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    clientType: false,
+                  }));
                   setPatientFormData((prev) => ({
                     ...prev,
                     clientType: value,
                   }));
                 }}
+                error={patientValidation.clientType}
               >
                 <MenuItem key={1} value="civil">
                   Цивільний
@@ -1094,6 +1576,7 @@ const AddAppointment = () => {
               name="cityOfResidence"
               value={patientFormData.cityOfResidence}
               onChange={handleChangePatientData}
+              error={patientValidation.cityOfResidence}
             />
           </Grid>
           <Grid width={1}>
@@ -1106,11 +1589,16 @@ const AddAppointment = () => {
                 label="Філія"
                 onChange={(event) => {
                   const value = event.target.value;
+                  setPatientValidation((prev) => ({
+                    ...prev,
+                    filialId: false,
+                  }));
                   setPatientFormData((prev) => ({
                     ...prev,
                     filialId: value,
                   }));
                 }}
+                error={patientValidation.filialId}
               >
                 {filials.map((filial) => (
                   <MenuItem key={filial.id} value={filial.id}>
@@ -1471,11 +1959,16 @@ const AddAppointment = () => {
                       label="Лікар"
                       onChange={(event) => {
                         const value = event.target.value;
+                        setValidation((prev) => ({
+                          ...prev,
+                          doctorId: false,
+                        }));
                         setAppointmentFormData((prev) => ({
                           ...prev,
                           doctorId: value,
                         }));
                       }}
+                      error={validation.doctorId}
                     >
                       {doctors.map((doctor) => (
                         <MenuItem key={doctor.id} value={doctor.id}>
@@ -1500,12 +1993,17 @@ const AddAppointment = () => {
                         const value = event.target.value;
                         const priceItem =
                           SERVICE_PRICES[value as keyof typeof SERVICE_PRICES];
+                        setValidation((prev) => ({
+                          ...prev,
+                          serviceType: false,
+                        }));
                         setAppointmentFormData((prev) => ({
                           ...prev,
                           serviceType: value,
                           price: priceItem.value,
                         }));
                       }}
+                      error={validation.serviceType}
                     >
                       {Object.keys(SERVICE_PRICES).map((key) => {
                         const serviceKey = key as keyof typeof SERVICE_PRICES;
@@ -1530,11 +2028,16 @@ const AddAppointment = () => {
                       label="Тип запису"
                       onChange={(event) => {
                         const value = event.target.value;
+                        setValidation((prev) => ({
+                          ...prev,
+                          recordType: false,
+                        }));
                         setAppointmentFormData((prev) => ({
                           ...prev,
                           recordType: value,
                         }));
                       }}
+                      error={validation.recordType}
                     >
                       <MenuItem key={1} value="website">
                         Заявка на сайті
@@ -1569,11 +2072,16 @@ const AddAppointment = () => {
                       label="Як дізнались"
                       onChange={(event) => {
                         const value = event.target.value;
+                        setValidation((prev) => ({
+                          ...prev,
+                          sourceOfInfo: false,
+                        }));
                         setAppointmentFormData((prev) => ({
                           ...prev,
                           sourceOfInfo: value,
                         }));
                       }}
+                      error={validation.sourceOfInfo}
                     >
                       <MenuItem key={1} value="external_advertising">
                         Зовнішня реклама

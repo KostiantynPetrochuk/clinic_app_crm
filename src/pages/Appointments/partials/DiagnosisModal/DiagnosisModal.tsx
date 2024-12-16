@@ -30,6 +30,11 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
     recommendations: "",
     comment: "",
   });
+  const [formDataValidation, setFormDataValidation] = useState({
+    diagnosis: false,
+    recommendations: false,
+    comment: false,
+  });
 
   const handleClickReport = () => setOpenReport((prev) => !prev);
 
@@ -50,6 +55,45 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
       comment: formData.comment,
     };
 
+    if (formData.diagnosis === "") {
+      setFormDataValidation({
+        ...formDataValidation,
+        diagnosis: true,
+      });
+      showMessage({
+        title: "Помилка!",
+        text: "Вкажіть діагноз.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (formData.recommendations === "") {
+      setFormDataValidation({
+        ...formDataValidation,
+        recommendations: true,
+      });
+      showMessage({
+        title: "Помилка!",
+        text: "Вкажіть рекомендації.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
+    if (formData.comment === "") {
+      setFormDataValidation({
+        ...formDataValidation,
+        comment: true,
+      });
+      showMessage({
+        title: "Помилка!",
+        text: "Вкажіть коментар.",
+        severity: "error",
+      });
+      stopLoading();
+      return;
+    }
     const { data, error } = await fetchPrivate("appointments/add-diagnosis", {
       method: "PATCH",
       body: JSON.stringify(body),
@@ -115,12 +159,17 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
               label="Діагноз"
               variant="outlined"
               value={formData.diagnosis}
-              onChange={(e) =>
+              onChange={(e) => {
+                setFormDataValidation({
+                  ...formDataValidation,
+                  diagnosis: false,
+                });
                 setFormData({
                   ...formData,
                   diagnosis: (e.target as HTMLInputElement).value,
-                })
-              }
+                });
+              }}
+              error={formDataValidation.diagnosis}
             />
           </FormControl>
           <FormControl sx={{ paddingTop: "10px" }}>
@@ -129,12 +178,17 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
               label="Рекомендації"
               variant="outlined"
               value={formData.recommendations}
-              onChange={(e) =>
+              onChange={(e) => {
+                setFormDataValidation({
+                  ...formDataValidation,
+                  recommendations: false,
+                });
                 setFormData({
                   ...formData,
                   recommendations: (e.target as HTMLInputElement).value,
-                })
-              }
+                });
+              }}
+              error={formDataValidation.recommendations}
             />
           </FormControl>
           <FormControl sx={{ paddingTop: "10px" }}>
@@ -143,12 +197,17 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
               label="Коментар"
               variant="outlined"
               value={formData.comment}
-              onChange={(e) =>
+              onChange={(e) => {
+                setFormDataValidation({
+                  ...formDataValidation,
+                  comment: false,
+                });
                 setFormData({
                   ...formData,
                   comment: (e.target as HTMLInputElement).value,
-                })
-              }
+                });
+              }}
+              error={formDataValidation.comment}
             />
           </FormControl>
         </DialogContent>
