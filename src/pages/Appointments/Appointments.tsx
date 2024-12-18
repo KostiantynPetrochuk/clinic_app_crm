@@ -407,6 +407,14 @@ const Appointments = () => {
                     setSelectedStatus("canceled");
                   }}
                 />
+                <FormControlLabel
+                  value="deleted"
+                  control={<Radio checked={selectedStatus === "deleted"} />}
+                  label="Видалений"
+                  onChange={() => {
+                    setSelectedStatus("deleted");
+                  }}
+                />
               </RadioGroup>
             </FormControl>
           </Paper>

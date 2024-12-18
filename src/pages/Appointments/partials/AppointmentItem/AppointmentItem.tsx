@@ -12,6 +12,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Badge from "@mui/material/Badge";
+import { red } from "@mui/material/colors";
 import { format, parseISO } from "date-fns";
 import { useAppSelector } from "../../../../hooks";
 import { selectDoctors } from "../../../../store/features/doctors/doctorsSlice";
@@ -31,6 +32,8 @@ import {
   RECORD_TYPES,
   SOURCE_OF_INFO,
 } from "../../../../constants";
+import DeleteModal from "../DeleteModal";
+import DeleteStatus from "../DeleteStatus";
 
 type Badge = {
   content: string;
@@ -84,6 +87,11 @@ const AppointmentItem = ({ appointment }: { appointment: Appointment }) => {
     badgeContent = "Скасовано";
     badgeColor = "error";
   }
+  if (appointment.status === "deleted") {
+    badgeContent = "Видалено";
+    badgeColor = "secondary";
+  }
+  const itemColor = appointment.status === "deleted" ? red[100] : "white";
 
   return (
     <Paper
@@ -93,6 +101,7 @@ const AppointmentItem = ({ appointment }: { appointment: Appointment }) => {
         textAlign: "center",
         marginTop: 2,
         width: "100%",
+        backgroundColor: itemColor,
       }}
       elevation={24}
     >
@@ -240,6 +249,12 @@ const AppointmentItem = ({ appointment }: { appointment: Appointment }) => {
               )}
               {appointment?.status === "done" && (
                 <SuccessStatus appointment={appointment} />
+              )}
+              {appointment?.status !== "deleted" && (
+                <DeleteModal appointment={appointment} />
+              )}
+              {appointment?.status === "deleted" && (
+                <DeleteStatus appointment={appointment} />
               )}
             </List>
           </Collapse>

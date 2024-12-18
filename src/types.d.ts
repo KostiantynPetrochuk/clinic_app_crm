@@ -92,6 +92,10 @@ declare global {
       Int64: number;
       Valid: boolean;
     };
+    deletedBy: {
+      Int64: number;
+      Valid: boolean;
+    };
     filialId: number;
     patientId: number;
     serviceType: string;
@@ -125,6 +129,14 @@ declare global {
     };
     createdAt: string;
     updatedAt: string;
+    deletedAt: {
+      Time: string;
+      Valid: boolean;
+    };
+    deleteReason: {
+      String: string;
+      Valid: boolean;
+    };
     //
     patientFirstName: string;
     patientLastName: string;
