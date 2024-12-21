@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,14 +9,17 @@ import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import useFetchPrivate from "../../../../hooks/useFetchPrivate";
 import { updateAppointment } from "../../../../store/features/appointments/appointmentsSlice";
 import { useAppDispatch } from "../../../../hooks";
 import useMessage from "../../../../hooks/useMessage";
 import useLoading from "../../../../hooks/useLoading";
+import { APP_ROUTES } from "../../../../constants";
 
 const DeleteModal = ({ appointment }: { appointment: Appointment }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const showMessage = useMessage();
   const fetchPrivate = useFetchPrivate();
   const { startLoading, stopLoading } = useLoading();
@@ -27,7 +31,8 @@ const DeleteModal = ({ appointment }: { appointment: Appointment }) => {
 
   const handleSubmit = async () => {
     startLoading();
-    if (!deleteReason.length) {
+    const deleteReasonValue = deleteReason.trim();
+    if (!deleteReasonValue.length) {
       setDeleteReasonValidation(true);
       showMessage({
         title: "Помилка!",
@@ -37,7 +42,7 @@ const DeleteModal = ({ appointment }: { appointment: Appointment }) => {
       stopLoading();
       return;
     }
-    if (deleteReason.length < 5) {
+    if (deleteReasonValue.length < 5) {
       setDeleteReasonValidation(true);
       showMessage({
         title: "Помилка!",
@@ -48,7 +53,7 @@ const DeleteModal = ({ appointment }: { appointment: Appointment }) => {
       return;
     }
     const body = {
-      deleteReason,
+      deleteReason: deleteReasonValue,
     };
     const { data, error } = await fetchPrivate(
       `appointments/${appointment.id}`,
@@ -83,11 +88,26 @@ const DeleteModal = ({ appointment }: { appointment: Appointment }) => {
   return (
     <ListItem
       sx={{
+        display: "grid",
         pl: 9,
         flexWrap: "wrap",
-        justifyContent: "center",
+        gridTemplateColumns: {
+          xs: "1fr",
+          sm: "0.5fr 0.5fr",
+        },
+        gridGap: 10,
       }}
     >
+      <Button
+        startIcon={<EditIcon />}
+        variant="contained"
+        color="warning"
+        onClick={() => {
+          navigate(APP_ROUTES.EDIT_APPOINTMENT + "/" + appointment.id);
+        }}
+      >
+        Редагувати
+      </Button>
       <Button
         startIcon={<DeleteIcon />}
         variant="contained"
@@ -118,7 +138,7 @@ const DeleteModal = ({ appointment }: { appointment: Appointment }) => {
             sx={{ mb: 2, marginTop: 2 }}
             value={deleteReason}
             onInput={(e) => {
-              const value = (e.target as HTMLInputElement).value.trim();
+              const value = (e.target as HTMLInputElement).value;
               setDeleteReason(value);
               setDeleteReasonValidation(false);
             }}

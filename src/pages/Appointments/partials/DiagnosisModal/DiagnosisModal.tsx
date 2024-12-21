@@ -128,6 +128,8 @@ const DiagnosisModal = ({ appointment }: { appointment: Appointment }) => {
         pl: 9,
         flexWrap: "wrap",
         justifyContent: "center",
+        display: "grid",
+        gridTemplateColumns: "1fr",
       }}
     >
       <Button

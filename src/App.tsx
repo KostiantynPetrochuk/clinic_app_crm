@@ -23,6 +23,7 @@ import {
   Applications,
   AddAppointment,
   Appointments,
+  EditAppointment,
 } from "./pages";
 import useUpdateInitData from "./hooks/useUpdateInitData";
 
@@ -74,6 +75,10 @@ function App() {
               <Route
                 path={APP_ROUTES.ADD_APPOINTMENT}
                 element={<AddAppointment />}
+              />
+              <Route
+                path={`${APP_ROUTES.EDIT_APPOINTMENT}/:id`}
+                element={<EditAppointment />}
               />
             </Route>
           </Route>

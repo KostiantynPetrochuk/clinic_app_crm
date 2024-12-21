@@ -15,6 +15,7 @@ export const APP_ROUTES = {
   APPLICATIONS: "/applications",
   APPOINTMENTS: "/appointments",
   ADD_APPOINTMENT: "/add-appointment",
+  EDIT_APPOINTMENT: "/edit-appointment",
   UNAUTHORIZED: "/unauthorized",
 };
 

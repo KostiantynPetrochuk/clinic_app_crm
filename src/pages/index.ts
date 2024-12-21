@@ -11,6 +11,7 @@ export { default as PatientDetails } from "./PatientDetails";
 export { default as Applications } from "./Applications";
 export { default as AddAppointment } from "./AddAppointment";
 export { default as Appointments } from "./Appointments";
+export { default as EditAppointment } from "./EditAppointment";
 
 export { default as Missing } from "./Missing";
 export { default as Unauthorized } from "./Unauthorized";
