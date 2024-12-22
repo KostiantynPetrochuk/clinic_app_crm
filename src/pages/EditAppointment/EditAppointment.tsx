@@ -13,6 +13,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import BackspaceIcon from "@mui/icons-material/Backspace";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   TextField,
   MenuItem,
@@ -187,6 +192,58 @@ const EditAppointment = () => {
     clientType: false,
     cityOfResidence: false,
   });
+
+  const [openDeleteReport, setOpenDeleteReport] = useState(false);
+  const handleToggleDeleteReport = () => {
+    setOpenDeleteReport(!openDeleteReport);
+  };
+  const handleDeleteReport = async () => {
+    startLoading();
+    const body = {
+      appointmentId: currentAppointment?.id,
+    };
+    const { error } = await fetchPrivate("appointments/delete-report", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+    if (error) {
+      stopLoading();
+      showMessage({
+        title: "Помилка!",
+        text: "Не вдалось видалити звіт.",
+        severity: "error",
+      });
+      return;
+    }
+    stopLoading();
+    navigate(APP_ROUTES.APPOINTMENTS);
+  };
+
+  const [openDeleteDiagnosis, setOpenDeleteDiagnosis] = useState(false);
+  const handleToggleDeleteDiagnosis = () => {
+    setOpenDeleteDiagnosis(!openDeleteDiagnosis);
+  };
+  const handleDeleteDiagnosis = async () => {
+    startLoading();
+    const body = {
+      appointmentId: currentAppointment?.id,
+    };
+    const { error } = await fetchPrivate("appointments/delete-diagnosis", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+    if (error) {
+      stopLoading();
+      showMessage({
+        title: "Помилка!",
+        text: "Не вдалось видалити діагноз.",
+        severity: "error",
+      });
+      return;
+    }
+    stopLoading();
+    navigate(APP_ROUTES.APPOINTMENTS);
+  };
 
   const [selectedDate, setSelectedDate] = useState<Date>(
     currentAppointment?.startDateTime
@@ -2332,6 +2389,36 @@ const EditAppointment = () => {
                     />
                   </Grid>
                 </Grid>
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  sx={{ flex: "1 1 auto", minWidth: "120px", marginTop: 2 }}
+                  onClick={handleToggleDeleteReport}
+                >
+                  Видалити звіт
+                </Button>
+                <Dialog
+                  open={openDeleteReport}
+                  onClose={handleToggleDeleteReport}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">{`Бажаєте видатили звіт?`}</DialogTitle>
+                  <DialogContent></DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleToggleDeleteReport}>
+                      Повернутись
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleDeleteReport}
+                      autoFocus
+                    >
+                      Видалити звіт
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Paper>
             )}
 
@@ -2457,6 +2544,36 @@ const EditAppointment = () => {
                     />
                   </Grid>
                 </Grid>
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  sx={{ flex: "1 1 auto", minWidth: "120px", marginTop: 2 }}
+                  onClick={handleToggleDeleteReport}
+                >
+                  Видалити звіт
+                </Button>
+                <Dialog
+                  open={openDeleteReport}
+                  onClose={handleToggleDeleteReport}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">{`Бажаєте видатили звіт?`}</DialogTitle>
+                  <DialogContent></DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleToggleDeleteReport}>
+                      Повернутись
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleDeleteReport}
+                      autoFocus
+                    >
+                      Видалити звіт
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Paper>
             )}
             {currentAppointment?.status === "done" && (
@@ -2570,6 +2687,36 @@ const EditAppointment = () => {
                     </FormControl>
                   </Grid>
                 </Grid>
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  sx={{ flex: "1 1 auto", minWidth: "120px", marginTop: 2 }}
+                  onClick={handleToggleDeleteDiagnosis}
+                >
+                  Видалити діагноз
+                </Button>
+                <Dialog
+                  open={openDeleteDiagnosis}
+                  onClose={handleToggleDeleteDiagnosis}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">{`Бажаєте видатили діагноз?`}</DialogTitle>
+                  <DialogContent></DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleToggleDeleteDiagnosis}>
+                      Повернутись
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleDeleteDiagnosis}
+                      autoFocus
+                    >
+                      Видалити діагноз
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Paper>
             )}
             <Paper
