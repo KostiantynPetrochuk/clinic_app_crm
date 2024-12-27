@@ -41,7 +41,6 @@ declare global {
       Time: string;
       Valid: boolean;
     };
-    placeOfResidence: string;
     sex: string;
     passportSeries: string;
     passportNumber: string;
@@ -49,7 +48,11 @@ declare global {
     placeOfWork: string;
     position: string;
     clientType: string;
+    regionOfBirth: string;
+    cityOfBirth: string;
+    regionOfResidence: string;
     cityOfResidence: string;
+    addressOfResidence: string;
     createdAt: string;
     updatedAt: string;
   }

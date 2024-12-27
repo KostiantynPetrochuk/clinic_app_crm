@@ -15,6 +15,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 
 import useFetchPrivate from "../../hooks/useFetchPrivate";
 import useMessage from "../../hooks/useMessage";
@@ -32,6 +33,7 @@ import {
   setSeconds,
   setMilliseconds,
 } from "date-fns";
+import { REGIONS, CITIES } from "../../constants";
 
 const PatientDetails = () => {
   const dispatch = useAppDispatch();
@@ -53,7 +55,6 @@ const PatientDetails = () => {
     lastName: currentPatient?.lastName || "",
     middleName: currentPatient?.middleName || "",
     birthDate: currentPatient?.birthDate?.Time || "",
-    placeOfResidence: currentPatient?.placeOfResidence || "",
     sex: currentPatient?.sex || "",
     passportSeries: currentPatient?.passportSeries || "",
     passportNumber: currentPatient?.passportNumber || "",
@@ -61,7 +62,11 @@ const PatientDetails = () => {
     placeOfWork: currentPatient?.placeOfWork || "",
     position: currentPatient?.position || "",
     clientType: currentPatient?.clientType || "",
+    regionOfBirth: currentPatient?.regionOfBirth || "",
+    cityOfBirth: currentPatient?.cityOfBirth || "",
+    regionOfResidence: currentPatient?.cityOfResidence || "",
     cityOfResidence: currentPatient?.cityOfResidence || "",
+    addressOfResidence: currentPatient?.addressOfResidence || "",
   });
   const [validation, setValidation] = useState({
     filialId: false,
@@ -79,7 +84,11 @@ const PatientDetails = () => {
     placeOfWork: false,
     position: false,
     clientType: false,
+    regionOfBirth: false,
+    cityOfBirth: false,
+    regionOfResidence: false,
     cityOfResidence: false,
+    addressOfResidence: false,
   });
 
   const handleChange = (event: any) => {
@@ -104,7 +113,6 @@ const PatientDetails = () => {
         lastName: formData.lastName,
         middleName: formData.middleName,
         birthDate: formData.birthDate,
-        placeOfResidence: formData.placeOfResidence,
         sex: formData.sex,
         passportSeries: formData.passportSeries,
         passportNumber: formData.passportNumber,
@@ -112,7 +120,11 @@ const PatientDetails = () => {
         placeOfWork: formData.placeOfWork,
         position: formData.position,
         clientType: formData.clientType,
+        regionOfBirth: formData.regionOfBirth,
+        cityOfBirth: formData.cityOfBirth,
+        regionOfResidence: formData.regionOfResidence,
         cityOfResidence: formData.cityOfResidence,
+        addressOfResidence: formData.addressOfResidence,
       };
       const { data, error } = await fetchPrivate("patients", {
         method: "PATCH",
@@ -200,15 +212,6 @@ const PatientDetails = () => {
       });
       return;
     }
-    if (!formData.placeOfResidence) {
-      setValidation((prev) => ({ ...prev, placeOfResidence: true }));
-      showMessage({
-        title: "Помилка!",
-        text: "Будь ласка, вкажіть місце прописки.",
-        severity: "error",
-      });
-      return;
-    }
     if (!formData.sex) {
       setValidation((prev) => ({ ...prev, sex: true }));
       showMessage({
@@ -273,11 +276,47 @@ const PatientDetails = () => {
       });
       return;
     }
+    if (!formData.regionOfBirth) {
+      setValidation((prev) => ({ ...prev, regionOfBirth: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть область народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.cityOfBirth) {
+      setValidation((prev) => ({ ...prev, cityOfBirth: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місто народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.regionOfResidence) {
+      setValidation((prev) => ({ ...prev, regionOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть область прописки.",
+        severity: "error",
+      });
+      return;
+    }
     if (!formData.cityOfResidence) {
       setValidation((prev) => ({ ...prev, cityOfResidence: true }));
       showMessage({
         title: "Помилка!",
-        text: "Будь ласка, вкажіть місце проживання.",
+        text: "Будь ласка, вкажіть місто прописки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!formData.addressOfResidence) {
+      setValidation((prev) => ({ ...prev, addressOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть адресу прописки.",
         severity: "error",
       });
       return;
@@ -308,7 +347,6 @@ const PatientDetails = () => {
           lastName: data.lastName,
           middleName: data.middleName,
           birthDate: data.birthDate?.Time,
-          placeOfResidence: data.placeOfResidence,
           sex: data.sex,
           passportSeries: data.passportSeries,
           passportNumber: data.passportNumber,
@@ -316,7 +354,11 @@ const PatientDetails = () => {
           placeOfWork: data.placeOfWork,
           position: data.position,
           clientType: data.clientType,
+          regionOfBirth: data.regionOfBirth,
+          cityOfBirth: data.cityOfBirth,
+          regionOfResidence: data.regionOfResidence,
           cityOfResidence: data.cityOfResidence,
+          addressOfResidence: data.addressOfResidence,
         });
       } catch (error) {
         showMessage({
@@ -507,16 +549,6 @@ const PatientDetails = () => {
                         />
                       </Grid>
                       <Grid width={1}>
-                        <TextField
-                          fullWidth
-                          label="Місце прописки"
-                          name="placeOfResidence"
-                          value={formData.placeOfResidence}
-                          onChange={handleChange}
-                          error={validation.placeOfResidence}
-                        />
-                      </Grid>
-                      <Grid width={1}>
                         <FormControl fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Стать
@@ -626,16 +658,6 @@ const PatientDetails = () => {
                         </FormControl>
                       </Grid>
                       <Grid width={1}>
-                        <TextField
-                          fullWidth
-                          label="Місце проживання"
-                          name="cityOfResidence"
-                          value={formData.cityOfResidence}
-                          onChange={handleChange}
-                          error={validation.cityOfResidence}
-                        />
-                      </Grid>
-                      <Grid width={1}>
                         <FormControl fullWidth>
                           <InputLabel id="demo-simple-select-label">
                             Філія
@@ -661,6 +683,249 @@ const PatientDetails = () => {
                             ))}
                           </Select>
                         </FormControl>
+                      </Grid>
+                      <Typography
+                        variant="h5"
+                        component="h2"
+                        sx={{
+                          marginTop: 1,
+                        }}
+                      >
+                        Місце народження
+                      </Typography>
+                      <Grid
+                        container
+                        width={1}
+                        display={"grid"}
+                        spacing={2}
+                        sx={{ mt: 2, textAlign: "left" }}
+                      >
+                        <Autocomplete
+                          freeSolo
+                          options={Object.keys(REGIONS).map((key) => ({
+                            value: key,
+                            label: REGIONS[key],
+                          }))}
+                          getOptionLabel={(option) =>
+                            typeof option === "string" ? option : option.label
+                          }
+                          value={
+                            formData.regionOfBirth
+                              ? {
+                                  value: formData.regionOfBirth,
+                                  label: REGIONS[formData.regionOfBirth] || "",
+                                }
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            setValidation((prev) => ({
+                              ...prev,
+                              regionOfBirth: false,
+                            }));
+                            setFormData({
+                              ...formData,
+                              regionOfBirth:
+                                typeof newValue === "object" &&
+                                newValue !== null &&
+                                "value" in newValue
+                                  ? newValue.value
+                                  : "",
+                            });
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              label="Область"
+                              name="regionOfBirth"
+                              value={
+                                formData.regionOfBirth
+                                  ? REGIONS[formData.regionOfBirth] || ""
+                                  : ""
+                              }
+                              error={validation.regionOfBirth}
+                            />
+                          )}
+                        />
+                        <Autocomplete
+                          freeSolo
+                          options={Object.keys(
+                            CITIES[formData.regionOfBirth] || {}
+                          ).map((key) => ({
+                            value: key,
+                            label: CITIES[formData.regionOfBirth][key],
+                          }))}
+                          getOptionLabel={(option) =>
+                            typeof option === "string" ? option : option.label
+                          }
+                          value={
+                            formData.cityOfBirth
+                              ? {
+                                  value: formData.cityOfBirth,
+                                  label:
+                                    CITIES[formData.regionOfBirth]?.[
+                                      formData.cityOfBirth
+                                    ] || "",
+                                }
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            setValidation((prev) => ({
+                              ...prev,
+                              cityOfBirth: false,
+                            }));
+                            setFormData({
+                              ...formData,
+                              cityOfBirth:
+                                typeof newValue === "object" &&
+                                newValue !== null &&
+                                "value" in newValue
+                                  ? newValue.value
+                                  : "",
+                            });
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Населений пункт"
+                              fullWidth
+                              error={validation.cityOfBirth}
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Typography
+                        variant="h5"
+                        component="h2"
+                        sx={{
+                          marginTop: 1,
+                        }}
+                      >
+                        Прописка
+                      </Typography>
+                      <Grid
+                        container
+                        display={"grid"}
+                        width={1}
+                        spacing={2}
+                        sx={{ mt: 2, textAlign: "left" }}
+                      >
+                        <Autocomplete
+                          freeSolo
+                          options={Object.keys(REGIONS).map((key) => {
+                            return {
+                              value: key,
+                              label: REGIONS[key],
+                            };
+                          })}
+                          getOptionLabel={(option) =>
+                            typeof option === "string" ? option : option.label
+                          }
+                          value={
+                            formData.regionOfResidence
+                              ? {
+                                  value: formData.regionOfResidence,
+                                  label:
+                                    REGIONS[formData.regionOfResidence] || "",
+                                }
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            setValidation((prev) => ({
+                              ...prev,
+                              regionOfResidence: false,
+                            }));
+                            setFormData({
+                              ...formData,
+                              regionOfResidence:
+                                typeof newValue === "object" &&
+                                newValue !== null &&
+                                "value" in newValue
+                                  ? newValue.value
+                                  : "",
+                            });
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              label="Область"
+                              name="regionOfResidence"
+                              value={
+                                formData.regionOfResidence
+                                  ? REGIONS[formData.regionOfResidence] || ""
+                                  : ""
+                              }
+                              error={validation.regionOfResidence}
+                            />
+                          )}
+                        />
+                        <Autocomplete
+                          freeSolo
+                          options={Object.keys(
+                            CITIES[formData.regionOfResidence] || {}
+                          ).map((key) => ({
+                            value: key,
+                            label: CITIES[formData.regionOfResidence][key],
+                          }))}
+                          getOptionLabel={(option) =>
+                            typeof option === "string" ? option : option.label
+                          }
+                          value={
+                            formData.cityOfResidence
+                              ? {
+                                  value: formData.cityOfResidence,
+                                  label:
+                                    CITIES[formData.regionOfResidence]?.[
+                                      formData.cityOfResidence
+                                    ] || "",
+                                }
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            setValidation((prev) => ({
+                              ...prev,
+                              cityOfResidence: false,
+                            }));
+                            setFormData({
+                              ...formData,
+                              cityOfResidence:
+                                typeof newValue === "object" &&
+                                newValue !== null &&
+                                "value" in newValue
+                                  ? newValue.value
+                                  : "",
+                            });
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Населений пункт"
+                              fullWidth
+                              error={validation.cityOfResidence}
+                            />
+                          )}
+                        />
+                        <Grid>
+                          <TextField
+                            fullWidth
+                            label="Введіть адресу"
+                            name="addressOfResidence"
+                            value={formData.addressOfResidence || ""}
+                            onChange={(e) => {
+                              setValidation((prev) => ({
+                                ...prev,
+                                addressOfResidence: false,
+                              }));
+                              setFormData({
+                                ...formData,
+                                addressOfResidence: e.target.value,
+                              });
+                            }}
+                            sx={{ mt: 2 }}
+                            error={validation.addressOfResidence}
+                          />
+                        </Grid>
                       </Grid>
                     </Grid>
                     <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -743,12 +1008,6 @@ const PatientDetails = () => {
                       </Grid>
                       <Grid>
                         <Typography variant="body1">
-                          <strong>Місце прописки:</strong>{" "}
-                          {currentPatient?.placeOfResidence || "Не вказано"}
-                        </Typography>
-                      </Grid>
-                      <Grid>
-                        <Typography variant="body1">
                           <strong>Стать:</strong>{" "}
                           {currentPatient?.sex || "Не вказано"}
                         </Typography>
@@ -789,10 +1048,70 @@ const PatientDetails = () => {
                           {currentPatient?.clientType || "Не вказано"}
                         </Typography>
                       </Grid>
+                      <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{
+                          marginTop: 1,
+                        }}
+                      >
+                        Місце народження
+                      </Typography>
                       <Grid>
                         <Typography variant="body1">
-                          <strong>Місце проживання:</strong>{" "}
-                          {currentPatient?.cityOfResidence || "Не вказано"}
+                          <strong>Область:</strong>{" "}
+                          {REGIONS[currentPatient?.regionOfBirth] ||
+                            "Не вказано"}
+                        </Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography variant="body1">
+                          <strong>Населений пункт:</strong>{" "}
+                          {currentPatient?.regionOfBirth &&
+                          currentPatient?.cityOfBirth &&
+                          CITIES[currentPatient.regionOfBirth]?.[
+                            currentPatient.cityOfBirth
+                          ]
+                            ? CITIES[currentPatient.regionOfBirth][
+                                currentPatient.cityOfBirth
+                              ]
+                            : "Не вказано"}
+                        </Typography>
+                      </Grid>
+                      <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{
+                          marginTop: 1,
+                        }}
+                      >
+                        Прописка
+                      </Typography>
+                      <Grid>
+                        <Typography variant="body1">
+                          <strong>Область:</strong>{" "}
+                          {REGIONS[currentPatient?.regionOfResidence] ||
+                            "Не вказано"}
+                        </Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography variant="body1">
+                          <strong>Населений пункт:</strong>{" "}
+                          {currentPatient?.regionOfResidence &&
+                          currentPatient?.cityOfResidence &&
+                          CITIES[currentPatient.regionOfResidence]?.[
+                            currentPatient.cityOfResidence
+                          ]
+                            ? CITIES[currentPatient.regionOfResidence][
+                                currentPatient.cityOfResidence
+                              ]
+                            : "Не вказано"}
+                        </Typography>
+                      </Grid>
+                      <Grid>
+                        <Typography variant="body1">
+                          <strong>Адреса:</strong>{" "}
+                          {currentPatient?.addressOfResidence || "Не вказано"}
                         </Typography>
                       </Grid>
                     </Grid>
