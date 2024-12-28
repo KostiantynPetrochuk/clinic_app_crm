@@ -45,13 +45,9 @@ import useLoading from "../../hooks/useLoading";
 import AddIcon from "@mui/icons-material/Add";
 import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 import { setPageData } from "../../store/features/pageData/pageDataSlice";
-import {
-  APP_ROUTES,
-  WORKING_TIME,
-  SERVICE_PRICES,
-  REGIONS,
-  CITIES,
-} from "../../constants";
+import { APP_ROUTES, WORKING_TIME, SERVICE_PRICES } from "../../constants";
+import { REGIONS } from "../../constants/regions";
+import { CITIES } from "../../constants/cities";
 import Message from "../../components/Message";
 
 type ButtonVariant = "contained" | "outlined" | "text";

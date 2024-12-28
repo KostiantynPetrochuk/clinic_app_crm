@@ -33,7 +33,8 @@ import {
   setSeconds,
   setMilliseconds,
 } from "date-fns";
-import { REGIONS, CITIES } from "../../constants";
+import { REGIONS } from "../../constants/regions";
+import { CITIES } from "../../constants/cities";
 
 const PatientDetails = () => {
   const dispatch = useAppDispatch();

@@ -25,6 +25,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import {
   format,
   parseISO,
@@ -50,6 +51,8 @@ import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 import { setPageData } from "../../store/features/pageData/pageDataSlice";
 import { APP_ROUTES, WORKING_TIME, SERVICE_PRICES } from "../../constants";
 import Message from "../../components/Message";
+import { REGIONS } from "../../constants/regions";
+import { CITIES } from "../../constants/cities";
 
 type ButtonVariant = "contained" | "outlined" | "text";
 
@@ -151,7 +154,6 @@ const EditAppointment = () => {
     lastName: currentPatient?.lastName || "",
     middleName: currentPatient?.middleName || "",
     birthDate: currentPatient?.birthDate?.Time || "",
-    placeOfResidence: currentPatient?.placeOfResidence || "",
     sex: currentPatient?.sex || "",
     passportSeries: currentPatient?.passportSeries || "",
     passportNumber: currentPatient?.passportNumber || "",
@@ -159,7 +161,11 @@ const EditAppointment = () => {
     placeOfWork: currentPatient?.placeOfWork || "",
     position: currentPatient?.position || "",
     clientType: currentPatient?.clientType || "",
+    regionOfBirth: currentPatient?.regionOfBirth || "",
+    cityOfBirth: currentPatient?.cityOfBirth || "",
+    regionOfResidence: currentPatient?.cityOfResidence || "",
     cityOfResidence: currentPatient?.cityOfResidence || "",
+    addressOfResidence: currentPatient?.addressOfResidence || "",
   });
   const [validation, setValidation] = useState({
     patientId: false,
@@ -182,7 +188,6 @@ const EditAppointment = () => {
     lastName: false,
     middleName: false,
     birthDate: false,
-    placeOfResidence: false,
     sex: false,
     passportSeries: false,
     passportNumber: false,
@@ -190,7 +195,11 @@ const EditAppointment = () => {
     placeOfWork: false,
     position: false,
     clientType: false,
+    regionOfBirth: false,
+    cityOfBirth: false,
+    regionOfResidence: false,
     cityOfResidence: false,
+    addressOfResidence: false,
   });
 
   const [openDeleteReport, setOpenDeleteReport] = useState(false);
@@ -385,7 +394,6 @@ const EditAppointment = () => {
         lastName: patientFormData.lastName,
         middleName: patientFormData.middleName,
         birthDate: patientFormData.birthDate,
-        placeOfResidence: patientFormData.placeOfResidence,
         sex: patientFormData.sex,
         passportSeries: patientFormData.passportSeries,
         passportNumber: patientFormData.passportNumber,
@@ -393,7 +401,11 @@ const EditAppointment = () => {
         placeOfWork: patientFormData.placeOfWork,
         position: patientFormData.position,
         clientType: patientFormData.clientType,
+        regionOfBirth: patientFormData.regionOfBirth,
+        cityOfBirth: patientFormData.cityOfBirth,
+        regionOfResidence: patientFormData.regionOfResidence,
         cityOfResidence: patientFormData.cityOfResidence,
+        addressOfResidence: patientFormData.addressOfResidence,
       };
       const { data, error } = await fetchPrivate("patients", {
         method: "POST",
@@ -467,15 +479,6 @@ const EditAppointment = () => {
       });
       return;
     }
-    if (!patientFormData.placeOfResidence) {
-      setPatientValidation((prev) => ({ ...prev, placeOfResidence: true }));
-      showMessage({
-        title: "Помилка!",
-        text: "Будь ласка, вкажіть місце прописки.",
-        severity: "error",
-      });
-      return;
-    }
     if (!patientFormData.sex) {
       setPatientValidation((prev) => ({ ...prev, sex: true }));
       showMessage({
@@ -540,11 +543,47 @@ const EditAppointment = () => {
       });
       return;
     }
+    if (!patientFormData.regionOfBirth) {
+      setPatientValidation((prev) => ({ ...prev, regionOfBirth: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть область народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.cityOfBirth) {
+      setPatientValidation((prev) => ({ ...prev, cityOfBirth: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місто народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.regionOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, regionOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть область прописки.",
+        severity: "error",
+      });
+      return;
+    }
     if (!patientFormData.cityOfResidence) {
       setPatientValidation((prev) => ({ ...prev, cityOfResidence: true }));
       showMessage({
         title: "Помилка!",
-        text: "Будь ласка, вкажіть місце проживання.",
+        text: "Будь ласка, вкажіть місто прописки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.addressOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, addressOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть адресу прописки.",
         severity: "error",
       });
       return;
@@ -573,7 +612,6 @@ const EditAppointment = () => {
         lastName: patientFormData.lastName,
         middleName: patientFormData.middleName,
         birthDate: patientFormData.birthDate,
-        placeOfResidence: patientFormData.placeOfResidence,
         sex: patientFormData.sex,
         passportSeries: patientFormData.passportSeries,
         passportNumber: patientFormData.passportNumber,
@@ -581,7 +619,11 @@ const EditAppointment = () => {
         placeOfWork: patientFormData.placeOfWork,
         position: patientFormData.position,
         clientType: patientFormData.clientType,
+        regionOfBirth: patientFormData.regionOfBirth,
+        cityOfBirth: patientFormData.cityOfBirth,
+        regionOfResidence: patientFormData.regionOfResidence,
         cityOfResidence: patientFormData.cityOfResidence,
+        addressOfResidence: patientFormData.addressOfResidence,
       };
       const { data, error } = await fetchPrivate("patients", {
         method: "PATCH",
@@ -654,15 +696,6 @@ const EditAppointment = () => {
       });
       return;
     }
-    if (!patientFormData.placeOfResidence) {
-      setPatientValidation((prev) => ({ ...prev, placeOfResidence: true }));
-      showMessage({
-        title: "Помилка!",
-        text: "Будь ласка, вкажіть місце прописки.",
-        severity: "error",
-      });
-      return;
-    }
     if (!patientFormData.sex) {
       setPatientValidation((prev) => ({ ...prev, sex: true }));
       showMessage({
@@ -727,11 +760,47 @@ const EditAppointment = () => {
       });
       return;
     }
+    if (!patientFormData.regionOfBirth) {
+      setPatientValidation((prev) => ({ ...prev, regionOfBirth: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть область народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.cityOfBirth) {
+      setPatientValidation((prev) => ({ ...prev, cityOfBirth: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть місто народження.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.regionOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, regionOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть область прописки.",
+        severity: "error",
+      });
+      return;
+    }
     if (!patientFormData.cityOfResidence) {
       setPatientValidation((prev) => ({ ...prev, cityOfResidence: true }));
       showMessage({
         title: "Помилка!",
-        text: "Будь ласка, вкажіть місце проживання.",
+        text: "Будь ласка, вкажіть місто прописки.",
+        severity: "error",
+      });
+      return;
+    }
+    if (!patientFormData.addressOfResidence) {
+      setPatientValidation((prev) => ({ ...prev, addressOfResidence: true }));
+      showMessage({
+        title: "Помилка!",
+        text: "Будь ласка, вкажіть адресу прописки.",
         severity: "error",
       });
       return;
@@ -893,7 +962,6 @@ const EditAppointment = () => {
         lastName: currentPatient?.lastName || "",
         middleName: currentPatient?.middleName || "",
         birthDate: currentPatient?.birthDate?.Time || "",
-        placeOfResidence: currentPatient?.placeOfResidence || "",
         sex: currentPatient?.sex || "",
         passportSeries: currentPatient?.passportSeries || "",
         passportNumber: currentPatient?.passportNumber || "",
@@ -901,7 +969,11 @@ const EditAppointment = () => {
         placeOfWork: currentPatient?.placeOfWork || "",
         position: currentPatient?.position || "",
         clientType: currentPatient?.clientType || "",
+        regionOfBirth: currentPatient?.regionOfBirth || "",
+        cityOfBirth: currentPatient?.cityOfBirth || "",
+        regionOfResidence: currentPatient?.regionOfResidence || "",
         cityOfResidence: currentPatient?.cityOfResidence || "",
+        addressOfResidence: currentPatient?.addressOfResidence || "",
       });
       setAppointmentFormData((prev) => ({
         ...prev,
@@ -1103,12 +1175,6 @@ const EditAppointment = () => {
           </Grid>
           <Grid>
             <Typography variant="body1">
-              <strong>Місце прописки:</strong>{" "}
-              {currentPatient?.placeOfResidence || "Не вказано"}
-            </Typography>
-          </Grid>
-          <Grid>
-            <Typography variant="body1">
               <strong>Стать:</strong> {currentPatient?.sex || "Не вказано"}
             </Typography>
           </Grid>
@@ -1148,10 +1214,82 @@ const EditAppointment = () => {
               {currentPatient?.clientType || "Не вказано"}
             </Typography>
           </Grid>
+        </Grid>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          Місце народження
+        </Typography>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
           <Grid>
             <Typography variant="body1">
-              <strong>Місце проживання:</strong>{" "}
-              {currentPatient?.cityOfResidence || "Не вказано"}
+              <strong>Область:</strong>{" "}
+              {REGIONS[currentPatient?.regionOfBirth] || "Не вказано"}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography variant="body1">
+              <strong>Населений пункт:</strong>{" "}
+              {currentPatient?.regionOfBirth &&
+              currentPatient?.cityOfBirth &&
+              CITIES[currentPatient.regionOfBirth]?.[currentPatient.cityOfBirth]
+                ? CITIES[currentPatient.regionOfBirth][
+                    currentPatient.cityOfBirth
+                  ]
+                : "Не вказано"}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          Прописка
+        </Typography>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
+          <Grid>
+            <Typography variant="body1">
+              <strong>Область:</strong>{" "}
+              {REGIONS[currentPatient?.regionOfResidence] || "Не вказано"}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography variant="body1">
+              <strong>Населений пункт:</strong>{" "}
+              {currentPatient?.regionOfResidence &&
+              currentPatient?.cityOfResidence &&
+              CITIES[currentPatient.regionOfResidence]?.[
+                currentPatient.cityOfResidence
+              ]
+                ? CITIES[currentPatient.regionOfResidence][
+                    currentPatient.cityOfResidence
+                  ]
+                : "Не вказано"}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography variant="body1">
+              <strong>Адреса:</strong>{" "}
+              {currentPatient?.addressOfResidence || "Не вказано"}
             </Typography>
           </Grid>
         </Grid>
@@ -1191,7 +1329,7 @@ const EditAppointment = () => {
           container
           display={"grid"}
           gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
-          spacing={1}
+          spacing={2}
           sx={{ mt: 2, textAlign: "left" }}
         >
           <Grid width={1}>
@@ -1295,16 +1433,6 @@ const EditAppointment = () => {
               value={patientFormData.phoneNumber}
               onChange={handleChangePatientData}
               error={patientValidation.phoneNumber}
-            />
-          </Grid>
-          <Grid width={1}>
-            <TextField
-              fullWidth
-              label="Місце прописки"
-              name="placeOfResidence"
-              value={patientFormData.placeOfResidence}
-              onChange={handleChangePatientData}
-              error={patientValidation.placeOfResidence}
             />
           </Grid>
           <Grid width={1}>
@@ -1418,16 +1546,6 @@ const EditAppointment = () => {
             </FormControl>
           </Grid>
           <Grid width={1}>
-            <TextField
-              fullWidth
-              label="Місце проживання"
-              name="cityOfResidence"
-              value={patientFormData.cityOfResidence}
-              onChange={handleChangePatientData}
-              error={patientValidation.cityOfResidence}
-            />
-          </Grid>
-          <Grid width={1}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Філія</InputLabel>
               <Select
@@ -1455,6 +1573,247 @@ const EditAppointment = () => {
                 ))}
               </Select>
             </FormControl>
+          </Grid>
+        </Grid>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          Місце народження
+        </Typography>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
+          <Autocomplete
+            freeSolo
+            options={Object.keys(REGIONS).map((key) => ({
+              value: key,
+              label: REGIONS[key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.regionOfBirth
+                ? {
+                    value: patientFormData.regionOfBirth,
+                    label: REGIONS[patientFormData.regionOfBirth] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                regionOfBirth: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                regionOfBirth:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                fullWidth
+                label="Область"
+                name="regionOfBirth"
+                value={
+                  patientFormData.regionOfBirth
+                    ? REGIONS[patientFormData.regionOfBirth] || ""
+                    : ""
+                }
+                error={patientValidation.regionOfBirth}
+              />
+            )}
+          />
+          <Autocomplete
+            freeSolo
+            options={Object.keys(
+              CITIES[patientFormData.regionOfBirth] || {}
+            ).map((key) => ({
+              value: key,
+              label: CITIES[patientFormData.regionOfBirth][key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.cityOfBirth
+                ? {
+                    value: patientFormData.cityOfBirth,
+                    label:
+                      CITIES[patientFormData.regionOfBirth]?.[
+                        patientFormData.cityOfBirth
+                      ] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                cityOfBirth: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                cityOfBirth:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Населений пункт"
+                fullWidth
+                error={patientValidation.cityOfBirth}
+              />
+            )}
+          />
+        </Grid>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          Прописка
+        </Typography>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
+          <Autocomplete
+            freeSolo
+            options={Object.keys(REGIONS).map((key) => ({
+              value: key,
+              label: REGIONS[key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.regionOfResidence
+                ? {
+                    value: patientFormData.regionOfResidence,
+                    label: REGIONS[patientFormData.regionOfResidence] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                regionOfResidence: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                regionOfResidence:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                fullWidth
+                label="Область"
+                name="regionOfResidence"
+                value={
+                  patientFormData.regionOfResidence
+                    ? REGIONS[patientFormData.regionOfResidence] || ""
+                    : ""
+                }
+                error={patientValidation.regionOfResidence}
+              />
+            )}
+          />
+
+          <Autocomplete
+            freeSolo
+            options={Object.keys(
+              CITIES[patientFormData.regionOfResidence] || {}
+            ).map((key) => ({
+              value: key,
+              label: CITIES[patientFormData.regionOfResidence][key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.cityOfResidence
+                ? {
+                    value: patientFormData.cityOfResidence,
+                    label:
+                      CITIES[patientFormData.regionOfResidence]?.[
+                        patientFormData.cityOfResidence
+                      ] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                cityOfResidence: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                cityOfResidence:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Населений пункт"
+                fullWidth
+                error={patientValidation.cityOfResidence}
+              />
+            )}
+          />
+          <Grid>
+            <TextField
+              fullWidth
+              label="Введіть адресу"
+              name="addressOfResidence"
+              value={patientFormData.addressOfResidence || ""}
+              onChange={(e) => {
+                setPatientValidation((prev) => ({
+                  ...prev,
+                  addressOfResidence: false,
+                }));
+                setPatientFormData({
+                  ...patientFormData,
+                  addressOfResidence: e.target.value,
+                });
+              }}
+              sx={{ mt: 2 }}
+              error={patientValidation.addressOfResidence}
+            />
           </Grid>
         </Grid>
         <Grid
@@ -1499,7 +1858,7 @@ const EditAppointment = () => {
           container
           display={"grid"}
           gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
-          spacing={1}
+          spacing={2}
           sx={{ mt: 2, textAlign: "left" }}
         >
           <Grid width={1}>
@@ -1603,16 +1962,6 @@ const EditAppointment = () => {
               value={patientFormData.phoneNumber}
               onChange={handleChangePatientData}
               error={patientValidation.phoneNumber}
-            />
-          </Grid>
-          <Grid width={1}>
-            <TextField
-              fullWidth
-              label="Місце прописки"
-              name="placeOfResidence"
-              value={patientFormData.placeOfResidence}
-              onChange={handleChangePatientData}
-              error={patientValidation.placeOfResidence}
             />
           </Grid>
           <Grid width={1}>
@@ -1726,16 +2075,6 @@ const EditAppointment = () => {
             </FormControl>
           </Grid>
           <Grid width={1}>
-            <TextField
-              fullWidth
-              label="Місце проживання"
-              name="cityOfResidence"
-              value={patientFormData.cityOfResidence}
-              onChange={handleChangePatientData}
-              error={patientValidation.cityOfResidence}
-            />
-          </Grid>
-          <Grid width={1}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Філія</InputLabel>
               <Select
@@ -1763,6 +2102,248 @@ const EditAppointment = () => {
                 ))}
               </Select>
             </FormControl>
+          </Grid>
+        </Grid>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          Місце народження
+        </Typography>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
+          <Autocomplete
+            freeSolo
+            options={Object.keys(REGIONS).map((key) => ({
+              value: key,
+              label: REGIONS[key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.regionOfBirth
+                ? {
+                    value: patientFormData.regionOfBirth,
+                    label: REGIONS[patientFormData.regionOfBirth] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                regionOfBirth: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                regionOfBirth:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                fullWidth
+                label="Область"
+                name="regionOfBirth"
+                value={
+                  patientFormData.regionOfBirth
+                    ? REGIONS[patientFormData.regionOfBirth] || ""
+                    : ""
+                }
+                error={patientValidation.regionOfBirth}
+              />
+            )}
+          />
+          <Autocomplete
+            freeSolo
+            options={Object.keys(
+              CITIES[patientFormData.regionOfBirth] || {}
+            ).map((key) => ({
+              value: key,
+              label: CITIES[patientFormData.regionOfBirth][key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.cityOfBirth
+                ? {
+                    value: patientFormData.cityOfBirth,
+                    label:
+                      CITIES[patientFormData.regionOfBirth]?.[
+                        patientFormData.cityOfBirth
+                      ] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                cityOfBirth: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                cityOfBirth:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Населений пункт"
+                fullWidth
+                error={patientValidation.cityOfBirth}
+              />
+            )}
+          />
+        </Grid>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{
+            marginTop: 1,
+          }}
+        >
+          Прописка
+        </Typography>
+        <Grid
+          container
+          display={"grid"}
+          gridTemplateColumns={{ xs: "1fr", md: "1fr 1fr" }}
+          spacing={1}
+          sx={{ mt: 2, textAlign: "left" }}
+        >
+          <Autocomplete
+            freeSolo
+            options={Object.keys(REGIONS).map((key) => {
+              return {
+                value: key,
+                label: REGIONS[key],
+              };
+            })}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.regionOfResidence
+                ? {
+                    value: patientFormData.regionOfResidence,
+                    label: REGIONS[patientFormData.regionOfResidence] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                regionOfResidence: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                regionOfResidence:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                fullWidth
+                label="Область"
+                name="regionOfResidence"
+                value={
+                  patientFormData.regionOfResidence
+                    ? REGIONS[patientFormData.regionOfResidence] || ""
+                    : ""
+                }
+                error={patientValidation.regionOfResidence}
+              />
+            )}
+          />
+          <Autocomplete
+            freeSolo
+            options={Object.keys(
+              CITIES[patientFormData.regionOfResidence] || {}
+            ).map((key) => ({
+              value: key,
+              label: CITIES[patientFormData.regionOfResidence][key],
+            }))}
+            getOptionLabel={(option) =>
+              typeof option === "string" ? option : option.label
+            }
+            value={
+              patientFormData.cityOfResidence
+                ? {
+                    value: patientFormData.cityOfResidence,
+                    label:
+                      CITIES[patientFormData.regionOfResidence]?.[
+                        patientFormData.cityOfResidence
+                      ] || "",
+                  }
+                : null
+            }
+            onChange={(_, newValue) => {
+              setPatientValidation((prev) => ({
+                ...prev,
+                cityOfResidence: false,
+              }));
+              setPatientFormData({
+                ...patientFormData,
+                cityOfResidence:
+                  typeof newValue === "object" &&
+                  newValue !== null &&
+                  "value" in newValue
+                    ? newValue.value
+                    : "",
+              });
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Населений пункт"
+                fullWidth
+                error={patientValidation.cityOfResidence}
+              />
+            )}
+          />
+          <Grid>
+            <TextField
+              fullWidth
+              label="Введіть адресу"
+              name="addressOfResidence"
+              value={patientFormData.addressOfResidence || ""}
+              onChange={(e) => {
+                setPatientValidation((prev) => ({
+                  ...prev,
+                  addressOfResidence: false,
+                }));
+                setPatientFormData({
+                  ...patientFormData,
+                  addressOfResidence: e.target.value,
+                });
+              }}
+              sx={{ mt: 2 }}
+              error={patientValidation.addressOfResidence}
+            />
           </Grid>
         </Grid>
         <Grid
@@ -1874,7 +2455,6 @@ const EditAppointment = () => {
                 lastName: "",
                 middleName: "",
                 birthDate: "",
-                placeOfResidence: "",
                 sex: "",
                 passportSeries: "",
                 passportNumber: "",
@@ -1882,7 +2462,11 @@ const EditAppointment = () => {
                 placeOfWork: "",
                 position: "",
                 clientType: "",
+                regionOfBirth: "",
+                cityOfBirth: "",
+                regionOfResidence: "",
                 cityOfResidence: "",
+                addressOfResidence: "",
               });
               setPatientFormState("add");
             }}
