@@ -2,7 +2,8 @@ export const API_URL = import.meta.env.VITE_API_URL;
 
 export const ROLES = {
   Developer: "Developer",
-  Administarator: "Administarator",
+  Founder: "Founder",
+  Administrator: "Administrator",
 };
 
 export const APP_ROUTES = {

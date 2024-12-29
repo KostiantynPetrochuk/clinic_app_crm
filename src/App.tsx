@@ -41,10 +41,38 @@ function App() {
 
           {/* protected routes */}
           <Route element={<PersistLogin />}>
-            <Route element={<RequireAuth allowedRoles={[ROLES.Developer]} />}>
+            <Route
+              element={
+                <RequireAuth
+                  allowedRoles={[
+                    ROLES.Developer,
+                    ROLES.Founder,
+                    ROLES.Administrator,
+                  ]}
+                />
+              }
+            >
               <Route path={APP_ROUTES.HOME} element={<Home />} />
+              <Route
+                path={APP_ROUTES.APPLICATIONS}
+                element={<Applications />}
+              />
+              <Route
+                path={APP_ROUTES.APPOINTMENTS}
+                element={<Appointments />}
+              />
+              <Route
+                path={APP_ROUTES.ADD_APPOINTMENT}
+                element={<AddAppointment />}
+              />
+            </Route>
+
+            <Route
+              element={
+                <RequireAuth allowedRoles={[ROLES.Developer, ROLES.Founder]} />
+              }
+            >
               <Route path={APP_ROUTES.CRM_USERS} element={<CrmUsers />} />
-              {/* Додаємо новий маршрут для детальної інформації про користувача */}
               <Route
                 path={`${APP_ROUTES.CRM_USERS}/:id`}
                 element={<CrmUserDetails />}
@@ -64,18 +92,7 @@ function App() {
                 path={`${APP_ROUTES.PATIENTS}/:id`}
                 element={<PatientDetails />}
               />
-              <Route
-                path={APP_ROUTES.APPLICATIONS}
-                element={<Applications />}
-              />
-              <Route
-                path={APP_ROUTES.APPOINTMENTS}
-                element={<Appointments />}
-              />
-              <Route
-                path={APP_ROUTES.ADD_APPOINTMENT}
-                element={<AddAppointment />}
-              />
+
               <Route
                 path={`${APP_ROUTES.EDIT_APPOINTMENT}/:id`}
                 element={<EditAppointment />}

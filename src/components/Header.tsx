@@ -25,21 +25,25 @@ import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import AirlineSeatReclineExtraIcon from "@mui/icons-material/AirlineSeatReclineExtra";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useTheme } from "@mui/material/styles";
-import { APP_ROUTES } from "../constants";
+import { APP_ROUTES, ROLES } from "../constants";
 import useLogout from "../hooks/useLogout";
+import useAuth from "../hooks/useAuth";
 
 const Header = () => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [state, setState] = React.useState(false);
   const navigate = useNavigate();
+  const { auth } = useAuth();
   const logout = useLogout();
   const signOut = async () => {
     await logout();
     navigate(APP_ROUTES.LOGIN);
   };
 
-  // const isDeveloper = auth?.roles?.includes("Developer");
+  const founder = auth?.roles?.some((role: string) =>
+    [ROLES.Developer, ROLES.Founder].includes(role)
+  );
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -101,46 +105,54 @@ const Header = () => {
                     </ListItemButton>
                   </ListItem>
                 </Link>
-                <Link to={APP_ROUTES.CRM_USERS}>
-                  <ListItem key={"crm-users"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <GroupIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={"Користувачі"} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-                <Link to={APP_ROUTES.FILIALS}>
-                  <ListItem key={"filials"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <BusinessIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={"Філії"} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-                <Link to={APP_ROUTES.DOCTORS}>
-                  <ListItem key={"doctors"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <LocalHospital />
-                      </ListItemIcon>
-                      <ListItemText primary={"Лікарі"} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-                <Link to={APP_ROUTES.PATIENTS}>
-                  <ListItem key={"patients"} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <AccountBoxIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={"Пацієнти"} />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
+                {founder && (
+                  <Link to={APP_ROUTES.CRM_USERS}>
+                    <ListItem key={"crm-users"} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <GroupIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={"Користувачі"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                )}
+                {founder && (
+                  <Link to={APP_ROUTES.FILIALS}>
+                    <ListItem key={"filials"} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <BusinessIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={"Філії"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                )}
+                {founder && (
+                  <Link to={APP_ROUTES.DOCTORS}>
+                    <ListItem key={"doctors"} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <LocalHospital />
+                        </ListItemIcon>
+                        <ListItemText primary={"Лікарі"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                )}
+                {founder && (
+                  <Link to={APP_ROUTES.PATIENTS}>
+                    <ListItem key={"patients"} disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <AccountBoxIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={"Пацієнти"} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                )}
                 <Link to={APP_ROUTES.APPLICATIONS}>
                   <ListItem key={"applications"} disablePadding>
                     <ListItemButton>

@@ -92,6 +92,16 @@ const Login = () => {
         stopLoading();
         return;
       }
+      if (!response.ok) {
+        const data = await response.json();
+        showMessage({
+          title: "Помилка!",
+          text: data.message,
+          severity: "error",
+        });
+        stopLoading();
+        return;
+      }
       const data = await response.json();
       const authData = data.user;
       authData.token = data.tokens.accessToken;
