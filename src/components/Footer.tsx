@@ -7,6 +7,9 @@ import BusinessIcon from "@mui/icons-material/Business";
 import HomeIcon from "@mui/icons-material/Home";
 import AppBar from "@mui/material/AppBar";
 import GroupIcon from "@mui/icons-material/Group";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import AirlineSeatReclineExtraIcon from "@mui/icons-material/AirlineSeatReclineExtra";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
@@ -47,8 +50,19 @@ const Footer = () => {
 
   const handleNavigation = (_: any, newValue: number) => setValue(newValue);
   const navigateHome = () => navigate(APP_ROUTES.HOME);
-  const navigateCrmUsers = () => navigate(APP_ROUTES.CRM_USERS);
-  const navigateFilials = () => navigate(APP_ROUTES.FILIALS);
+  const navigateApplications = () => navigate(APP_ROUTES.APPLICATIONS);
+  const navigateAppointments = () => navigate(APP_ROUTES.APPOINTMENTS);
+  //
+  const navigateCrmUsers = () => {
+    handleClose();
+    setValue(-1);
+    navigate(APP_ROUTES.CRM_USERS);
+  };
+  const navigateFilials = () => {
+    handleClose();
+    setValue(-1);
+    navigate(APP_ROUTES.FILIALS);
+  };
   const navigateDoctors = () => {
     handleClose();
     setValue(-1);
@@ -59,7 +73,11 @@ const Footer = () => {
     setValue(-1);
     navigate(APP_ROUTES.PATIENTS);
   };
-
+  const navigateAddAppointment = () => {
+    handleClose();
+    setValue(-1);
+    navigate(APP_ROUTES.ADD_APPOINTMENT);
+  };
   const handleLogout = async () => {
     await logout();
     navigate(APP_ROUTES.LOGIN);
@@ -80,14 +98,14 @@ const Footer = () => {
               onClick={navigateHome}
             />
             <BottomNavigationAction
-              label="Користувачі"
-              icon={<GroupIcon />}
-              onClick={navigateCrmUsers}
+              label="Записи"
+              icon={<AppRegistrationIcon />}
+              onClick={navigateApplications}
             />
             <BottomNavigationAction
-              label="Філії"
-              icon={<BusinessIcon />}
-              onClick={navigateFilials}
+              label="Прийоми"
+              icon={<AirlineSeatReclineExtraIcon />}
+              onClick={navigateAppointments}
             />
             <BottomNavigationAction
               label="Меню"
@@ -112,6 +130,14 @@ const Footer = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              <MenuItem onClick={navigateCrmUsers}>
+                <GroupIcon sx={{ mr: 1 }} color="action" />
+                Користувачі
+              </MenuItem>
+              <MenuItem onClick={navigateFilials}>
+                <BusinessIcon sx={{ mr: 1 }} color="action" />
+                Філії
+              </MenuItem>
               <MenuItem onClick={navigateDoctors}>
                 <LocalHospital sx={{ mr: 1 }} color="action" />
                 Лікарі
@@ -119,6 +145,10 @@ const Footer = () => {
               <MenuItem onClick={navigatePatients}>
                 <AccountBoxIcon sx={{ mr: 1 }} color="action" />
                 Пацієнти
+              </MenuItem>
+              <MenuItem onClick={navigateAddAppointment}>
+                <AddCircleIcon sx={{ mr: 1 }} color="action" />
+                Додати прийом
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <LogoutIcon sx={{ mr: 1 }} color="action" />

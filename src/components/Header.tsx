@@ -162,7 +162,7 @@ const Header = () => {
                   </ListItem>
                 </Link>
                 <Link to={APP_ROUTES.ADD_APPOINTMENT}>
-                  <ListItem key={"add-application"} disablePadding>
+                  <ListItem key={"add-appointment"} disablePadding>
                     <ListItemButton>
                       <ListItemIcon>
                         <AddCircleIcon />
