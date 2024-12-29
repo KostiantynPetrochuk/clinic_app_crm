@@ -275,7 +275,11 @@ const AddAppointment = () => {
         bookingTime.includes(time)
       );
       if (isOverlapping) {
-        console.log("Selected time slots overlap with booked time slots");
+        showMessage({
+          title: "Увага!",
+          text: "Будь ласка, оберіть інший час, який не перетинається із вже зайнятим.",
+          severity: "warning",
+        });
         setAppointmentFormData((prev) => ({
           ...prev,
           startDateTime: "",
@@ -1148,9 +1152,7 @@ const AddAppointment = () => {
             variant="contained"
             startIcon={<EditIcon />}
             sx={{ flex: "1 1 auto", minWidth: "120px" }}
-            onClick={() => {
-              setPatientFormState("edit");
-            }}
+            onClick={() => setPatientFormState("edit")}
           >
             Редагувати
           </Button>
@@ -1158,10 +1160,7 @@ const AddAppointment = () => {
             variant="contained"
             startIcon={<EditIcon />}
             sx={{ flex: "1 1 auto", minWidth: "120px" }}
-            onClick={() => {
-              console.log("Редагування пацієнта");
-              setPatientFormState("search");
-            }}
+            onClick={() => setPatientFormState("search")}
           >
             Вибрати іншого
           </Button>
@@ -1798,7 +1797,7 @@ const AddAppointment = () => {
                 error={patientValidation.phoneCountryCode}
               >
                 {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
-                  <MenuItem value={key}>
+                  <MenuItem key={key} value={key}>
                     {
                       PHONE_COUNTRY_CODES[
                         key as keyof typeof PHONE_COUNTRY_CODES
@@ -2254,7 +2253,7 @@ const AddAppointment = () => {
               }}
             >
               {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
-                <MenuItem value={key}>
+                <MenuItem key={key} value={key}>
                   {PHONE_COUNTRY_CODES[key as keyof typeof PHONE_COUNTRY_CODES]}
                 </MenuItem>
               ))}
@@ -2472,10 +2471,7 @@ const AddAppointment = () => {
                     ) {
                       buttonVariant = "contained";
                     }
-                  } else if (!startString && !endString) {
-                    // console.log("none");
                   }
-
                   return (
                     <Grid key={index}>
                       <Button

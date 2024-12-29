@@ -96,7 +96,9 @@ const CancelButton = ({
                 label="Причина відмови"
                 onChange={handleChangeCancelReason}
               >
-                <MenuItem value={"changed_my_mind"}>Клієнт передумав</MenuItem>
+                <MenuItem key={"changed_my_mind"} value={"changed_my_mind"}>
+                  Клієнт передумав
+                </MenuItem>
               </Select>
             </FormControl>
           </Box>

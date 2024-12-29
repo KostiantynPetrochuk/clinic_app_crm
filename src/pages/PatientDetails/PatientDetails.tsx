@@ -490,7 +490,7 @@ const PatientDetails = () => {
                             error={validation.phoneCountryCode}
                           >
                             {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
-                              <MenuItem value={key}>
+                              <MenuItem key={key} value={key}>
                                 {
                                   PHONE_COUNTRY_CODES[
                                     key as keyof typeof PHONE_COUNTRY_CODES

@@ -354,8 +354,12 @@ const CrmUserDetails = () => {
                               });
                             }}
                           >
-                            <MenuItem value={"false"}>Заборонено</MenuItem>
-                            <MenuItem value={"true"}>Дозволено</MenuItem>
+                            <MenuItem key={0} value={"false"}>
+                              Заборонено
+                            </MenuItem>
+                            <MenuItem key={1} value={"true"}>
+                              Дозволено
+                            </MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>

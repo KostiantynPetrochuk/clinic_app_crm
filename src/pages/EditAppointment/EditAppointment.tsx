@@ -368,7 +368,11 @@ const EditAppointment = () => {
         bookingTime.includes(time)
       );
       if (isOverlapping) {
-        console.log("Selected time slots overlap with booked time slots");
+        showMessage({
+          title: "Увага!",
+          text: "Будь ласка, оберіть інший час, який не перетинається із вже зайнятим.",
+          severity: "warning",
+        });
         setAppointmentFormData((prev) => ({
           ...prev,
           startDateTime: "",
@@ -1430,7 +1434,7 @@ const EditAppointment = () => {
                 error={patientValidation.phoneCountryCode}
               >
                 {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
-                  <MenuItem value={key}>
+                  <MenuItem key={key} value={key}>
                     {
                       PHONE_COUNTRY_CODES[
                         key as keyof typeof PHONE_COUNTRY_CODES
@@ -1960,7 +1964,7 @@ const EditAppointment = () => {
                 error={patientValidation.phoneCountryCode}
               >
                 {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
-                  <MenuItem value={key}>
+                  <MenuItem key={key} value={key}>
                     {
                       PHONE_COUNTRY_CODES[
                         key as keyof typeof PHONE_COUNTRY_CODES
@@ -2418,7 +2422,7 @@ const EditAppointment = () => {
               }}
             >
               {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
-                <MenuItem value={key}>
+                <MenuItem key={key} value={key}>
                   {PHONE_COUNTRY_CODES[key as keyof typeof PHONE_COUNTRY_CODES]}
                 </MenuItem>
               ))}
@@ -2635,8 +2639,6 @@ const EditAppointment = () => {
                     ) {
                       buttonVariant = "contained";
                     }
-                  } else if (!startString && !endString) {
-                    // console.log("none");
                   }
 
                   return (
