@@ -45,7 +45,16 @@ import useLoading from "../../hooks/useLoading";
 import AddIcon from "@mui/icons-material/Add";
 import FileDownloadDoneIcon from "@mui/icons-material/FileDownloadDone";
 import { setPageData } from "../../store/features/pageData/pageDataSlice";
-import { APP_ROUTES, WORKING_TIME, SERVICE_PRICES } from "../../constants";
+import {
+  APP_ROUTES,
+  WORKING_TIME,
+  SERVICE_PRICES,
+  PHONE_COUNTRY_CODES,
+  PATIENTS_TYPES,
+  SEX,
+  RECORD_TYPES,
+  SOURCE_OF_INFO,
+} from "../../constants";
 import { REGIONS } from "../../constants/regions";
 import { CITIES } from "../../constants/cities";
 import Message from "../../components/Message";
@@ -1057,13 +1066,7 @@ const AddAppointment = () => {
             </Typography>
           </Grid>
         </Grid>
-        <Typography
-          variant="h5"
-          component="h2"
-          sx={{
-            marginTop: 1,
-          }}
-        >
+        <Typography variant="h5" component="h2" sx={{ marginTop: 1 }}>
           Місце народження
         </Typography>
         <Grid
@@ -1264,9 +1267,15 @@ const AddAppointment = () => {
                 onChange={handleChangePatientData}
                 error={patientValidation.phoneCountryCode}
               >
-                <MenuItem value="+1">+1 (США)</MenuItem>
-                <MenuItem value="+44">+44 (Великобританія)</MenuItem>
-                <MenuItem value="+380">+380 (Україна)</MenuItem>
+                {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {
+                      PHONE_COUNTRY_CODES[
+                        key as keyof typeof PHONE_COUNTRY_CODES
+                      ]
+                    }
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -1301,12 +1310,11 @@ const AddAppointment = () => {
                 }}
                 error={patientValidation.sex}
               >
-                <MenuItem key={1} value="male">
-                  Чоловік
-                </MenuItem>
-                <MenuItem key={2} value="female">
-                  Жінка
-                </MenuItem>
+                {Object.keys(SEX).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {SEX[key as keyof typeof SEX]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -1378,15 +1386,11 @@ const AddAppointment = () => {
                 }}
                 error={patientValidation.clientType}
               >
-                <MenuItem key={1} value="civil">
-                  Цивільний
-                </MenuItem>
-                <MenuItem key={2} value="military">
-                  Військовий
-                </MenuItem>
-                <MenuItem key={3} value="vpo">
-                  ВПО
-                </MenuItem>
+                {Object.keys(PATIENTS_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {PATIENTS_TYPES[key as keyof typeof PATIENTS_TYPES]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -1793,9 +1797,15 @@ const AddAppointment = () => {
                 onChange={handleChangePatientData}
                 error={patientValidation.phoneCountryCode}
               >
-                <MenuItem value="+1">+1 (США)</MenuItem>
-                <MenuItem value="+44">+44 (Великобританія)</MenuItem>
-                <MenuItem value="+380">+380 (Україна)</MenuItem>
+                {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
+                  <MenuItem value={key}>
+                    {
+                      PHONE_COUNTRY_CODES[
+                        key as keyof typeof PHONE_COUNTRY_CODES
+                      ]
+                    }
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -1830,12 +1840,11 @@ const AddAppointment = () => {
                 }}
                 error={patientValidation.sex}
               >
-                <MenuItem key={1} value="male">
-                  Чоловік
-                </MenuItem>
-                <MenuItem key={2} value="female">
-                  Жінка
-                </MenuItem>
+                {Object.keys(SEX).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {SEX[key as keyof typeof SEX]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -1907,15 +1916,11 @@ const AddAppointment = () => {
                 }}
                 error={patientValidation.clientType}
               >
-                <MenuItem key={1} value="civil">
-                  Цивільний
-                </MenuItem>
-                <MenuItem key={2} value="military">
-                  Військовий
-                </MenuItem>
-                <MenuItem key={3} value="vpo">
-                  ВПО
-                </MenuItem>
+                {Object.keys(PATIENTS_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {PATIENTS_TYPES[key as keyof typeof PATIENTS_TYPES]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -2077,12 +2082,10 @@ const AddAppointment = () => {
         >
           <Autocomplete
             freeSolo
-            options={Object.keys(REGIONS).map((key) => {
-              return {
-                value: key,
-                label: REGIONS[key],
-              };
-            })}
+            options={Object.keys(REGIONS).map((key) => ({
+              value: key,
+              label: REGIONS[key],
+            }))}
             getOptionLabel={(option) =>
               typeof option === "string" ? option : option.label
             }
@@ -2250,9 +2253,11 @@ const AddAppointment = () => {
                 setSearchPatientPhoneCode(value);
               }}
             >
-              <MenuItem value="+1">+1 (США)</MenuItem>
-              <MenuItem value="+44">+44 (Великобританія)</MenuItem>
-              <MenuItem value="+380">+380 (Україна)</MenuItem>
+              {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
+                <MenuItem value={key}>
+                  {PHONE_COUNTRY_CODES[key as keyof typeof PHONE_COUNTRY_CODES]}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Grid>
@@ -2624,24 +2629,11 @@ const AddAppointment = () => {
                       }}
                       error={validation.recordType}
                     >
-                      <MenuItem key={1} value="website">
-                        Заявка на сайті
-                      </MenuItem>
-                      <MenuItem key={2} value="reception">
-                        Рецепсія
-                      </MenuItem>
-                      <MenuItem key={3} value="insurance_company">
-                        Страхова компанія
-                      </MenuItem>
-                      <MenuItem key={4} value="by_phone">
-                        По телефону
-                      </MenuItem>
-                      <MenuItem key={5} value="partner">
-                        Партнер
-                      </MenuItem>
-                      <MenuItem key={6} value="contract">
-                        Договір
-                      </MenuItem>
+                      {Object.keys(RECORD_TYPES).map((key) => (
+                        <MenuItem key={key} value={key}>
+                          {RECORD_TYPES[key as keyof typeof RECORD_TYPES]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -2668,33 +2660,11 @@ const AddAppointment = () => {
                       }}
                       error={validation.sourceOfInfo}
                     >
-                      <MenuItem key={1} value="external_advertising">
-                        Зовнішня реклама
-                      </MenuItem>
-                      <MenuItem key={2} value="instagram">
-                        Інстаграм
-                      </MenuItem>
-                      <MenuItem key={3} value="facebook">
-                        Фейсбук
-                      </MenuItem>
-                      <MenuItem key={4} value="print_advertising">
-                        Друкована реклама
-                      </MenuItem>
-                      <MenuItem key={5} value="regular_customer">
-                        Постійний клієнт
-                      </MenuItem>
-                      <MenuItem key={6} value="friends">
-                        Друзі
-                      </MenuItem>
-                      <MenuItem key={7} value="business_cards">
-                        Візитки
-                      </MenuItem>
-                      <MenuItem key={8} value="flyer">
-                        Флаєр
-                      </MenuItem>
-                      <MenuItem key={9} value="website">
-                        Сайт
-                      </MenuItem>
+                      {Object.keys(SOURCE_OF_INFO).map((key) => (
+                        <MenuItem key={key} value={key}>
+                          {SOURCE_OF_INFO[key as keyof typeof SOURCE_OF_INFO]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>

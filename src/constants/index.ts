@@ -32,6 +32,28 @@ export const SERVICE_PRICES = {
   },
 };
 
+export const PAYMENT_TYPES = {
+  cash: "готівка",
+  terminal: "Термінал",
+};
+
+export const PHONE_COUNTRY_CODES = {
+  "+1": "+1 (США)",
+  "+44": "+44 (Великобританія)",
+  "+380": "+380 (Україна)",
+};
+
+export const PATIENTS_TYPES = {
+  civil: "Цивільний",
+  military: "Військовий",
+  idp: "ВПО",
+};
+
+export const SEX = {
+  male: "Чоловік",
+  female: "Жінка",
+};
+
 export const RECORD_TYPES = {
   website: "Заявка на сайті",
   reception: "Рецепсія",

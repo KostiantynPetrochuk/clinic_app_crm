@@ -19,6 +19,7 @@ import { updateAppointment } from "../../../../store/features/appointments/appoi
 import { useAppDispatch } from "../../../../hooks";
 import useMessage from "../../../../hooks/useMessage";
 import useLoading from "../../../../hooks/useLoading";
+import { PAYMENT_TYPES } from "../../../../constants";
 
 const ReportModal = ({ appointment }: { appointment: Appointment }) => {
   const dispatch = useAppDispatch();
@@ -179,30 +180,21 @@ const ReportModal = ({ appointment }: { appointment: Appointment }) => {
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                 >
-                  <FormControlLabel
-                    value="cash"
-                    control={<Radio />}
-                    label="Готівка"
-                    checked={formData.paymentType === "cash"}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        paymentType: (e.target as HTMLInputElement).value,
-                      })
-                    }
-                  />
-                  <FormControlLabel
-                    value="terminal"
-                    control={<Radio />}
-                    label="Термінал"
-                    checked={formData.paymentType === "terminal"}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        paymentType: (e.target as HTMLInputElement).value,
-                      })
-                    }
-                  />
+                  {Object.keys(PAYMENT_TYPES).map((key) => (
+                    <FormControlLabel
+                      key={key}
+                      value={key}
+                      control={<Radio />}
+                      label={PAYMENT_TYPES[key as keyof typeof PAYMENT_TYPES]}
+                      checked={formData.paymentType === key}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          paymentType: (e.target as HTMLInputElement).value,
+                        })
+                      }
+                    />
+                  ))}
                 </RadioGroup>
               </FormControl>
               <FormControlLabel

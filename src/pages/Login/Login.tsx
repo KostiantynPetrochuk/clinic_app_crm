@@ -19,7 +19,7 @@ import {
   selectPersist,
   setPersist,
 } from "../../store/features/persist/persistSlice";
-import { API_URL, APP_ROUTES } from "../../constants";
+import { API_URL, APP_ROUTES, PHONE_COUNTRY_CODES } from "../../constants";
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -144,9 +144,11 @@ const Login = () => {
               defaultValue="+380"
               label="Код країни телефону"
             >
-              <MenuItem value="+1">+1 (США)</MenuItem>
-              <MenuItem value="+44">+44 (Великобританія)</MenuItem>
-              <MenuItem value="+380">+380 (Україна)</MenuItem>
+              {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
+                <MenuItem value={key}>
+                  {PHONE_COUNTRY_CODES[key as keyof typeof PHONE_COUNTRY_CODES]}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <TextField

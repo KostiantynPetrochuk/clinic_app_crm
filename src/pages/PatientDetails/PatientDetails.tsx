@@ -33,6 +33,7 @@ import {
   setSeconds,
   setMilliseconds,
 } from "date-fns";
+import { PHONE_COUNTRY_CODES, PATIENTS_TYPES, SEX } from "../../constants";
 import { REGIONS } from "../../constants/regions";
 import { CITIES } from "../../constants/cities";
 
@@ -488,11 +489,15 @@ const PatientDetails = () => {
                             onChange={handleChange}
                             error={validation.phoneCountryCode}
                           >
-                            <MenuItem value="+1">+1 (США)</MenuItem>
-                            <MenuItem value="+44">
-                              +44 (Великобританія)
-                            </MenuItem>
-                            <MenuItem value="+380">+380 (Україна)</MenuItem>
+                            {Object.keys(PHONE_COUNTRY_CODES).map((key) => (
+                              <MenuItem value={key}>
+                                {
+                                  PHONE_COUNTRY_CODES[
+                                    key as keyof typeof PHONE_COUNTRY_CODES
+                                  ]
+                                }
+                              </MenuItem>
+                            ))}
                           </Select>
                         </FormControl>
                       </Grid>
@@ -568,12 +573,11 @@ const PatientDetails = () => {
                             }}
                             error={validation.sex}
                           >
-                            <MenuItem key={1} value="male">
-                              Чоловік
-                            </MenuItem>
-                            <MenuItem key={2} value="female">
-                              Жінка
-                            </MenuItem>
+                            {Object.keys(SEX).map((key) => (
+                              <MenuItem key={key} value={key}>
+                                {SEX[key as keyof typeof SEX]}
+                              </MenuItem>
+                            ))}
                           </Select>
                         </FormControl>
                       </Grid>
@@ -584,7 +588,6 @@ const PatientDetails = () => {
                           name="passportSeries"
                           value={formData.passportSeries}
                           onChange={handleChange}
-                          // error={validation.passportSeries}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -594,7 +597,6 @@ const PatientDetails = () => {
                           name="passportNumber"
                           value={formData.passportNumber}
                           onChange={handleChange}
-                          // error={validation.passportNumber}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -604,7 +606,6 @@ const PatientDetails = () => {
                           name="idCardNumber"
                           value={formData.idCardNumber}
                           onChange={handleChange}
-                          // error={validation.idCardNumber}
                         />
                       </Grid>
                       <Grid width={1}>
@@ -646,15 +647,15 @@ const PatientDetails = () => {
                             }}
                             error={validation.clientType}
                           >
-                            <MenuItem key={1} value="civil">
-                              Цивільний
-                            </MenuItem>
-                            <MenuItem key={2} value="military">
-                              Військовий
-                            </MenuItem>
-                            <MenuItem key={3} value="vpo">
-                              ВПО
-                            </MenuItem>
+                            {Object.keys(PATIENTS_TYPES).map((key) => (
+                              <MenuItem key={key} value={key}>
+                                {
+                                  PATIENTS_TYPES[
+                                    key as keyof typeof PATIENTS_TYPES
+                                  ]
+                                }
+                              </MenuItem>
+                            ))}
                           </Select>
                         </FormControl>
                       </Grid>

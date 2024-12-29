@@ -26,6 +26,12 @@ import Select from "@mui/material/Select";
 import { selectCrmUsers } from "../../store/features/crmUsers/crmUsersSlice";
 import { selectPatients } from "../../store/features/patients/patientsSlice";
 import { selectDoctors } from "../../store/features/doctors/doctorsSlice";
+import {
+  PAYMENT_TYPES,
+  RECORD_TYPES,
+  SOURCE_OF_INFO,
+  SERVICE_PRICES,
+} from "../../constants";
 
 const Appointments = () => {
   const dispatch = useAppDispatch();
@@ -222,9 +228,14 @@ const Appointments = () => {
                   setSelectedService(value);
                 }}
               >
-                <MenuItem key={1} value="consultation">
-                  Консультація
-                </MenuItem>
+                {Object.keys(SERVICE_PRICES).map((key) => {
+                  const serviceKey = key as keyof typeof SERVICE_PRICES;
+                  return (
+                    <MenuItem key={serviceKey} value={serviceKey}>
+                      {SERVICE_PRICES[serviceKey].label}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -239,24 +250,11 @@ const Appointments = () => {
                   setSelectedRecordType(value);
                 }}
               >
-                <MenuItem key={1} value="website">
-                  Заявка на сайті
-                </MenuItem>
-                <MenuItem key={2} value="reception">
-                  Рецепсія
-                </MenuItem>
-                <MenuItem key={3} value="insurance_company">
-                  Страхова компанія
-                </MenuItem>
-                <MenuItem key={4} value="by_phone">
-                  По телефону
-                </MenuItem>
-                <MenuItem key={5} value="partner">
-                  Партнер
-                </MenuItem>
-                <MenuItem key={6} value="contract">
-                  Договір
-                </MenuItem>
+                {Object.keys(RECORD_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {RECORD_TYPES[key as keyof typeof RECORD_TYPES]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -273,33 +271,11 @@ const Appointments = () => {
                   setSourceOfInfo(value);
                 }}
               >
-                <MenuItem key={1} value="external_advertising">
-                  Зовнішня реклама
-                </MenuItem>
-                <MenuItem key={2} value="instagram">
-                  Інстаграм
-                </MenuItem>
-                <MenuItem key={3} value="facebook">
-                  Фейсбук
-                </MenuItem>
-                <MenuItem key={4} value="print_advertising">
-                  Друкована реклама
-                </MenuItem>
-                <MenuItem key={5} value="regular_customer">
-                  Постійний клієнт
-                </MenuItem>
-                <MenuItem key={6} value="friends">
-                  Друзі
-                </MenuItem>
-                <MenuItem key={7} value="business_cards">
-                  Візитки
-                </MenuItem>
-                <MenuItem key={8} value="flyer">
-                  Флаєр
-                </MenuItem>
-                <MenuItem key={9} value="website">
-                  Сайт
-                </MenuItem>
+                {Object.keys(SOURCE_OF_INFO).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {SOURCE_OF_INFO[key as keyof typeof SOURCE_OF_INFO]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -335,12 +311,11 @@ const Appointments = () => {
                   setPaymentType(value);
                 }}
               >
-                <MenuItem key={1} value="cash">
-                  Готівка
-                </MenuItem>
-                <MenuItem key={2} value="terminal">
-                  Термінал
-                </MenuItem>
+                {Object.keys(PAYMENT_TYPES).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {PAYMENT_TYPES[key as keyof typeof PAYMENT_TYPES]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>

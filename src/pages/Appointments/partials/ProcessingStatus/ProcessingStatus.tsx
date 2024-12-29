@@ -2,14 +2,16 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useAppSelector } from "../../../../hooks";
 import { selectCrmUsers } from "../../../../store/features/crmUsers/crmUsersSlice";
+import { PAYMENT_TYPES } from "../../../../constants";
 
 const ProcessingStatus = ({ appointment }: { appointment: Appointment }) => {
   const crmUsers = useAppSelector(selectCrmUsers);
   let paymentType;
-  if (appointment?.paymentType?.String === "cash") {
-    paymentType = "Готівка";
-  } else if (appointment?.paymentType?.String === "terminal") {
-    paymentType = "Термінал";
+  const paymentTypesKeys = Object.keys(PAYMENT_TYPES);
+  if (appointment?.paymentType?.String === paymentTypesKeys[0]) {
+    paymentType = PAYMENT_TYPES.cash;
+  } else if (appointment?.paymentType?.String === paymentTypesKeys[1]) {
+    paymentType = PAYMENT_TYPES.terminal;
   }
   const reporter = crmUsers.find(
     (user) => user.id === appointment.aReporterId.Int64
